@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,7 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
     RedisUtils redisUtils;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         // 指定相应格式为json
         response.setContentType("application/json;charset=UTF-8");
         JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
@@ -55,7 +54,7 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         map.put("userId", base64UserId);
         map.put("role", base64Role);
 
-//        /*TODO token交由redis管理时效*/
+//        /* token交由redis管理时效*/
 //        redisUtils.setWithTimeoutSeconds(realToken, "", jwtProperties.getTokenValidityInSeconds());
 
         /**

@@ -1,19 +1,16 @@
 package com.gsg.blogbackend.filter;
 
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.gsg.blogbackend.utils.BaseUtil;
 import com.gsg.blogbackend.utils.JacksonUtils;
 import com.gsg.blogbackend.utils.ParseJsonUtil;
 import com.gsg.blogbackend.utils.Request;
-import jdk.jshell.execution.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +19,9 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * @Description: TODO
- * @Author shuaigang
- * @Date 2021/9/29 16:15
+ * @Description: 过滤器一：判断接口请求是（上传文件、访问图片、数据请求、登录请求）
+ * @Author: shuaigang
+ * @Date: 2021/9/29 16:15
  */
 @Component
 @Slf4j

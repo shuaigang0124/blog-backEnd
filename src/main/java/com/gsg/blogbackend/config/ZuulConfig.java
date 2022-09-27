@@ -4,10 +4,13 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.unit.DataSize;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.servlet.MultipartConfigElement;
 
+/**
+ * @author shuaigang
+ * @Date: 2022年9月27日  10点41分
+ */
 @Configuration
 public class ZuulConfig implements WebMvcConfigurer {
 

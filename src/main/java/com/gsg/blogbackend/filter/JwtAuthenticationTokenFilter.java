@@ -7,11 +7,11 @@ import com.gsg.blogbackend.utils.JwtTokenUtil;
 import com.gsg.blogbackend.utils.RedisUtils;
 import com.gsg.blogbackend.utils.WebPUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
@@ -32,8 +32,6 @@ import static com.gsg.blogbackend.utils.Constants.IS_EXPIRED;
 @Component
 @Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-
-    private static Float webPScale = 1.0f;
 
     @Resource
     private UserDetailServiceImpl userDetailsService;
@@ -67,7 +65,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 flag = false;
             }
 
-            /*TODO token交由redis管理时效*/
+            /* token交由redis管理时效*/
 //            flag = true;
 //            Boolean tokenExistFlag = redisUtils.isExist(authToken);
 //            if(tokenExistFlag){
@@ -90,7 +88,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null && flag) {
 
 
-            /**
+            /*
              * Token副本校验
              * 在redis中存储token副本，用户请求时候校验，如果redis中不存在该副本则不给通过。
              */
@@ -100,7 +98,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 //            }
 
             // token中username不为空，进行token验证
-            /* 从数据库得到带有密码的完整user信息*/
+            // 从数据库得到带有密码的完整user信息
             JwtUserDetails userDetails = this.userDetailsService.loadUserByUsername(userId);
 
             if (jwtTokenUtil.validateToken(authToken, userDetails)
@@ -108,7 +106,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             ) {
 
                 log.info("验证通过，将验证信息放入上下文中");
-                /**
+                /*
                  * UsernamePasswordAuthenticationToken继承AbstractAuthenticationToken实现Authentication
                  * 所以当在页面中输入用户名和密码之后首先会进入到UsernamePasswordAuthenticationToken验证(Authentication)，
                  * 然后生成的Authentication会被交由AuthenticationManager来进行管理
@@ -126,39 +124,40 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
         }
 
-        String requestURI = request.getRequestURI();
+        String requestUrl = request.getRequestURI();
         String method = request.getMethod();
-        log.info("请求URL:【{}】Method:【{}】", requestURI, method);
+        log.info("请求URL:【{}】Method:【{}】", requestUrl, method);
 
 
         /*requestURI = /gsg/static-resource/formal/2/20211014/123456.png*/
-        if (method.equals("GET")
+        if ("GET".equals(method)
                 // 本地
-//                 && requestURI.startsWith("/D:/static-resource/formal")
+                /* requestURI.startsWith("/D:/static-resource/formal") */
                 // 开发
-                && requestURI.startsWith("/gsg/static-resource/formal")
-                && (requestURI.endsWith(".png")
-                || requestURI.endsWith(".jpg")
-                || requestURI.endsWith(".jpeg")
-                || requestURI.endsWith(".gif")
-                || requestURI.endsWith(".bmp")
-                || requestURI.endsWith(".webp"))) {
-            /** 20211210 如果请求GET 方式获取图片资源文件时，将图片转换成webp格式，进行返回*/
-            int beginIndex = requestURI.lastIndexOf("/");
+                && requestUrl.startsWith("/gsg/static-resource/formal")
+                && (requestUrl.endsWith(".png")
+                || requestUrl.endsWith(".jpg")
+                || requestUrl.endsWith(".jpeg")
+                || requestUrl.endsWith(".gif")
+                || requestUrl.endsWith(".bmp")
+                || requestUrl.endsWith(".webp"))) {
+            /* 20211210 如果请求GET 方式获取图片资源文件时，将图片转换成webp格式，进行返回*/
+            int beginIndex = requestUrl.lastIndexOf("/");
             /*/gsg/static-resource/formal/2/20211014*/
-            String imgFilePath = requestURI.substring(0, beginIndex);
+            String imgFilePath = requestUrl.substring(0, beginIndex);
 
-            /** 20211210 生成WebP图片副本*/
-            beginIndex = requestURI.lastIndexOf(".");
-            String imgFilePrefix = requestURI.substring(0, beginIndex);
-            String imgWebPFile = imgFilePrefix + ".webp";
-            log.info("请求图片路径:【{}】对应WebP图片:【{}】", imgFilePath, imgWebPFile);
+            /* 20211210 生成WebP图片副本*/
+            beginIndex = requestUrl.lastIndexOf(".");
+            String imgFilePrefix = requestUrl.substring(0, beginIndex);
+            String imgWebpFile = imgFilePrefix + ".webp";
+            log.info("请求图片路径:【{}】对应WebP图片:【{}】", imgFilePath, imgWebpFile);
 
-            /** 判断副本图片不存在就生成，*/
-            File webPFile = new File(imgWebPFile);
-            if (!webPFile.exists()) {
+            /* 判断副本图片不存在就生成，*/
+            File webpFile = new File(imgWebpFile);
+            if (!webpFile.exists()) {
                 log.info("调用方法生成WebP副本");
-                if (requestURI.contains(".webp")) {
+                Float webpScale = 1.0f;
+                if (requestUrl.contains(".webp")) {
                     String imgPngFilePath = imgFilePrefix + ".png";
                     String imgGifFilePath = imgFilePrefix + ".gif";
                     String imgJpgFilePath = imgFilePrefix + ".jpg";
@@ -166,39 +165,39 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     String imgJpegFilePath = imgFilePrefix + ".jpeg";
                     File imgPngFile = new File(imgPngFilePath);
                     if (imgPngFile.exists()) {
-                        WebPUtils.encodingToWebp(imgPngFilePath, imgWebPFile, webPScale);
+                        WebPUtils.encodingToWebp(imgPngFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgGifFile = new File(imgGifFilePath);
                     if (imgGifFile.exists()) {
-                        WebPUtils.encodingToWebp(imgGifFilePath, imgWebPFile, webPScale);
+                        WebPUtils.encodingToWebp(imgGifFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgJpgFile = new File(imgJpgFilePath);
                     if (imgJpgFile.exists()) {
-                        WebPUtils.encodingToWebp(imgJpgFilePath, imgWebPFile, webPScale);
+                        WebPUtils.encodingToWebp(imgJpgFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgBmpFile = new File(imgBmpFilePath);
                     if (imgBmpFile.exists()) {
-                        WebPUtils.encodingToWebp(imgBmpFilePath, imgWebPFile, webPScale);
+                        WebPUtils.encodingToWebp(imgBmpFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgJpegFile = new File(imgJpegFilePath);
                     if (imgJpegFile.exists()) {
-                        WebPUtils.encodingToWebp(imgJpegFilePath, imgWebPFile, webPScale);
+                        WebPUtils.encodingToWebp(imgJpegFilePath, imgWebpFile, webpScale);
                     }
                 } else {
-                    WebPUtils.encodingToWebp(requestURI, imgWebPFile, webPScale);
+                    WebPUtils.encodingToWebp(requestUrl, imgWebpFile, webpScale);
                 }
             }
 
-            if (!requestURI.contains(".webp")) {
-                /** 20211124 前端增加header参数，判断是否支持WebP格式图片访问*/
+            if (!requestUrl.contains(".webp")) {
+                /* 20211124 前端增加header参数，判断是否支持WebP格式图片访问*/
                 String supportWebp = request.getHeader("supportWebp");
-//                String serverName = request.getHeader("serverName");
+                // String serverName = request.getHeader("serverName");
                 if (!StringUtils.isEmpty(supportWebp)
-                        && supportWebp.trim().equals("1")) {
+                        && "1".equals(supportWebp.trim())) {
 //
 //                    if (ObjectUtils.isEmpty(serverName)) {
 //                        serverName = request.getServerName() + ":" + request.getServerPort();
@@ -206,8 +205,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 //                    if(!ObjectUtils.isEmpty(request.getScheme())){
 //                        serverName = request.getScheme() + "://" + serverName;
 //                    }
-                    log.info("请求转发图片副本：【{}】", imgWebPFile);
-                    request.getRequestDispatcher(imgWebPFile).forward(request, response);
+                    log.info("请求转发图片副本：【{}】", imgWebpFile);
+                    request.getRequestDispatcher(imgWebpFile).forward(request, response);
                 }
 
             }

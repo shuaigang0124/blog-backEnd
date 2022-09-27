@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.validation.Valid;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO
+ * @Description: 登录控制器
  * @author shuaigang
  * @date 2021/9/29 17:22
  */
@@ -27,9 +25,6 @@ import java.util.Map;
 @RequestMapping("/gsg/authentication")
 @Component
 public class LoginController {
-
-    /*@Value("${jasypt.encryptor.password}")
-    public String encryptorSaltKey;*/
 
     @Autowired
     private UserDetailServiceImpl userDetailService;

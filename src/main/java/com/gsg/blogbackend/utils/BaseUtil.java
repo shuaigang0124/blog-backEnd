@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
+ * @author shuaigang
  * @Description Base64 加密工具类
  **/
 @Slf4j
@@ -38,7 +39,7 @@ public class BaseUtil {
     /**
      * @Description Base64 解密
      **/
-    public static String decode(String data) throws UnsupportedEncodingException {
+    public static String decode(String data) {
 
         byte[] bytes = Base64.getDecoder().decode(data);
         return new String(bytes, StandardCharsets.UTF_8);

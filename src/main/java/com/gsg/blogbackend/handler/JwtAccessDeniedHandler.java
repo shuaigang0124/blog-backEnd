@@ -21,7 +21,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException {
         log.debug("权限不足！");
         String json = JacksonUtils.obj2json(R.construct(R.FORBIDDEN,"权限不足！"));
         // 指定相应格式为json
