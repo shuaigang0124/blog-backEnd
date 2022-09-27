@@ -6,7 +6,7 @@
 
 * [前端地址](https://github.com/GaoShengGang/blog-frontEnd)
 * [后台地址](https://github.com/GaoShengGang/blog-backEnd)
-* [项目预览](https:/shuaigang.top)
+* [项目预览](https://shuaigang.top)
 
 #### 注意事项
 
