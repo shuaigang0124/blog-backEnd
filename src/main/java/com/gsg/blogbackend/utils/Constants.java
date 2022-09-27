@@ -3,6 +3,7 @@ package com.gsg.blogbackend.utils;
 /**
  * 常量接口
  *  存放公共常使用的常量
+ * @author shuaigang
  */
 public interface Constants {
 

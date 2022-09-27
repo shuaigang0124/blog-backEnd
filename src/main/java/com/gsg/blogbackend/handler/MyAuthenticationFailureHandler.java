@@ -21,7 +21,7 @@ import java.io.IOException;
 @Slf4j
 public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
         log.debug("登陆失败！用户名或密码错误！");
         String json = JacksonUtils.obj2json(R.construct(R.WRONG_PASSWORD, "登陆失败！用户名或密码错误！"));
         // 指定响应格式为json

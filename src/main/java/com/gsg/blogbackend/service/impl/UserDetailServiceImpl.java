@@ -13,7 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import static com.gsg.blogbackend.utils.Constants.DELIMITER_3;
 
 /**
- * @Description: TODO
+ * @Description: security默认实现类
  * @Author shuaigang
  * @Date 2021/9/29 14:48
  */

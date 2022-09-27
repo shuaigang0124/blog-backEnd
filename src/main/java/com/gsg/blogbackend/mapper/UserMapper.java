@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gsg.blogbackend.model.User;
 import org.springframework.stereotype.Repository;
 
+/**
+ * @author shuaigang
+ */
 @Repository
 public interface UserMapper extends BaseMapper<User> {
 
