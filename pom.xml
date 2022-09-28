@@ -178,6 +178,8 @@
                 </configuration>
             </plugin>
         </plugins>
+        <!--打包后的 Jar包名-->
+        <finalName>blog</finalName>
     </build>
 
 </project>
