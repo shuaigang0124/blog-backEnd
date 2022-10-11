@@ -1,7 +1,9 @@
 package com.gsg.blog.handler;
 
+import com.gsg.blog.utils.BaseUtil;
 import com.gsg.blog.utils.JacksonUtils;
 import com.gsg.blog.utils.R;
+import com.gsg.blog.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -22,7 +24,7 @@ public class MyAuthenticationFailureHandler implements AuthenticationFailureHand
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
         log.debug("登陆失败！用户名或密码错误！");
-        String json = JacksonUtils.obj2json(R.construct(R.WRONG_PASSWORD, "登陆失败！用户名或密码错误！"));
+        String json = JacksonUtils.obj2json(Result.ok(BaseUtil.encode(R.construct(R.WRONG_PASSWORD, "登陆失败！用户名或密码错误！"))));
         // 指定响应格式为json
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(json);

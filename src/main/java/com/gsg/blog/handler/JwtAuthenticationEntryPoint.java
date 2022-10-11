@@ -1,7 +1,9 @@
 package com.gsg.blog.handler;
 
+import com.gsg.blog.utils.BaseUtil;
 import com.gsg.blog.utils.JacksonUtils;
 import com.gsg.blog.utils.R;
+import com.gsg.blog.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -31,10 +33,10 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         if (FLAG.equals(response.getHeader(IS_EXPIRED))) {
             log.debug("token已失效!");
-            json = JacksonUtils.obj2json(R.construct(R.TOKEN_IS_EXPIRED, "登录已失效！!"));
+            json = JacksonUtils.obj2json(Result.ok(BaseUtil.encode(R.construct(R.TOKEN_IS_EXPIRED, "登录已失效！!"))));
         } else {
             log.debug("未认证!");
-            json = JacksonUtils.obj2json(R.construct(R.UNAUTHORIZED, "未认证登录!"));
+            json = JacksonUtils.obj2json(Result.ok(BaseUtil.encode(R.construct(R.UNAUTHORIZED, "未认证登录!"))));
         }
         response.getWriter().write(json);
     }

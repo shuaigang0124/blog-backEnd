@@ -1,10 +1,7 @@
 package com.gsg.blog.handler;
 
 import com.gsg.blog.model.JwtUserDetails;
-import com.gsg.blog.utils.JacksonUtils;
-import com.gsg.blog.utils.JwtTokenUtil;
-import com.gsg.blog.utils.R;
-import com.gsg.blog.utils.RedisUtils;
+import com.gsg.blog.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,7 +64,7 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 返回数据
-        String json = JacksonUtils.obj2json(R.ok(map));
+        String json = JacksonUtils.obj2json(Result.ok(BaseUtil.encode(R.ok(map))));
 
         response.getWriter().write(json);
 

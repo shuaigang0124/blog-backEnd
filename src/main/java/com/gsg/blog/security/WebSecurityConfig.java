@@ -58,8 +58,8 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST = {
 //            "/gsg/authentication/login",
             "/gsg/authentication/logout",
-            "/gsg/authentication/generateToken"
-//            "/gsg/test"
+            "/gsg/authentication/generateToken",
+            "/gsg/test"
     };
 
     @Bean
