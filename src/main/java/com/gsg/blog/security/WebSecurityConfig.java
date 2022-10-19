@@ -57,6 +57,7 @@ public class WebSecurityConfig {
      */
     private static final String[] AUTH_WHITELIST = {
 //            "/gsg/authentication/login",
+            "/gsg/authentication/form",
             "/gsg/authentication/logout",
             "/gsg/authentication/generateToken",
             "/gsg/test"

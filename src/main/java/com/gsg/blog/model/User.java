@@ -3,8 +3,16 @@ package com.gsg.blog.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -23,6 +31,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @TableName("user")
 @Accessors(chain = true)
+//@NoArgsConstructor
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,6 +55,8 @@ public class User implements Serializable {
      * 生日
      */
     @TableField("birthday")
+    @JsonDeserialize(using = LocalDateDeserializer.class) // 反序列化
+    @JsonSerialize(using = LocalDateSerializer.class) // 序列化
     private LocalDate birthday;
 
     /**
@@ -88,12 +99,16 @@ public class User implements Serializable {
      * 创建时间
      */
     @TableField("gmt_create")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
+    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
     private LocalDateTime gmtCreate;
 
     /**
      * 修改时间
      */
     @TableField("gmt_modified")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
+    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
     private LocalDateTime gmtModified;
 
 

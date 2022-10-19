@@ -90,7 +90,7 @@ public class DateFormateUtils {
     }
 
     /**
-     * @Description Date 转 LocalDateTime
+     * @Description Date 转 LocalDate
      * @Author gaoshenggang
      **/
     public static LocalDate asLocalDate(Date date) {
