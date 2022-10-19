@@ -28,8 +28,6 @@ class BlogBackEndApplicationTests {
     // -----创建索引-----
     @Test
     public void testCreateIndexByUtil() {
-        //System.out.println(EsClientUtil.createIndex(indexName));
-        //EsClientUtil.createIndex("INDEX_abc");
         esUtil.index.create("INDEX_abc123");
     }
 
@@ -112,9 +110,6 @@ class BlogBackEndApplicationTests {
         userMap.put(user1.getId(), user1);
 
         int i  = esUtil.doc.createOrUpdateBth(indexName, userMap);
-        /*for (BulkResponseItem item : bulkResponse.items()) {
-            System.out.println(item.id());
-        }*/
         System.out.println(i);
     }
 
