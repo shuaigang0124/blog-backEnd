@@ -18,6 +18,51 @@
         <result column="gmt_modified" property="gmtModified" />
     </resultMap>
 
+
+    <insert id="insertUser" parameterType="com.gsg.blog.dto.UserDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            user(
+                id,
+                user_name,
+                password,
+                birthday,
+                email,
+                phone,
+                avatar,
+                <if test="role != null and role != ''">role,</if>
+                sex,
+                address,
+                gmt_create,
+                gmt_modified
+            )values(
+                #{id},
+                #{userName},
+                #{password},
+                #{birthday},
+                #{email},
+                #{phone},
+                #{avatar},
+                <if test="role != null and role != ''">#{role},</if>
+                #{sex},
+                #{address},
+                #{gmtCreate},
+                #{gmtModified}
+            )
+    </insert>
+
+    <!-- 校验用户名称是否唯一 -->
+    <select id="checkUserNameUnique" resultType="com.gsg.blog.model.User">
+        select id, user_name from user where user_name = #{userName} limit 1
+    </select>
+    <!-- 校验手机号码是否唯一 -->
+    <select id="checkPhoneUnique" resultType="com.gsg.blog.model.User">
+        select id, phone from user where phone = #{phone}  limit 1
+    </select>
+    <!-- 校验email是否唯一 -->
+    <select id="checkEmailUnique" resultType="com.gsg.blog.model.User">
+        select id, email from user where email = #{email} limit 1
+    </select>
+
     <!--  根据条件查询对应的用户信息（内部使用）  -->
     <select id="getUserByCondition" resultType="com.gsg.blog.model.User">
         select

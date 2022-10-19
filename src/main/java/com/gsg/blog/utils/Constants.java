@@ -56,4 +56,7 @@ public interface Constants {
     String HTTPS = "https://";
 
 
+    /** 校验返回结果码 */
+    String UNIQUE = "0";
+    String NOT_UNIQUE = "1";
 }
