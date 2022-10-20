@@ -36,8 +36,9 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         response.setContentType("application/json;charset=UTF-8");
         JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
         // 使用userid生成token
-        String userId = userDetails.getUsername();
-        String realToken = jwtTokenUtil.generateToken(authentication.getName());
+        String userId = userDetails.getUserId();
+//        String realToken = jwtTokenUtil.generateToken(authentication.getName());
+        String realToken = jwtTokenUtil.generateToken(userId);
         Map<String, Object> map = new HashMap<>();
         // base64 加密用户Id，用户角色
         String base64UserId = Base64.getEncoder().encodeToString(userId.getBytes());

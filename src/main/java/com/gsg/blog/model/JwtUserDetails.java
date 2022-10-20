@@ -32,9 +32,6 @@ public class JwtUserDetails implements UserDetails { // 实现UserDeails接口
         this.password = password;
         this.role = role;
     }
-    public JwtUserDetails(String userId){
-        this.userId = userId;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -28,13 +28,13 @@ class BlogBackEndApplicationTests {
     // -----创建索引-----
     @Test
     public void testCreateIndexByUtil() {
-        esUtil.index.create("INDEX_abc123");
+        esUtil.index.create("message");
     }
 
     // -----查询索引-----
     @Test
     public void testQueryIndexByUtil() {
-        Map<String, IndexState> result = esUtil.index.query("test");
+        Map<String, IndexState> result = esUtil.index.query("shuaigang");
         System.out.println(result);
     }
 
@@ -50,7 +50,7 @@ class BlogBackEndApplicationTests {
     // -----删除索引-----
     @Test
     public void testDeleteIndexByUtil() {
-        boolean b = esUtil.index.del("index_abc123");
+        boolean b = esUtil.index.del("test");
         System.out.println(b);
     }
 
@@ -145,6 +145,7 @@ class BlogBackEndApplicationTests {
     public void testQueryDocument() {
         String[] query = {"email","avatar","userName"};
         List<Object> docs = esUtil.doc.query(indexName, "帅刚", query);
+//        List<Object> docs = esUtil.doc.query(indexName, null, null);
         for (Object doc : docs) {
             System.out.println(doc);
         }

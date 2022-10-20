@@ -171,8 +171,8 @@ public class JwtTokenUtil {
     // 验证token是否有效
     public Boolean validateToken(String token, UserDetails userDetails) {
         JwtUserDetails user = (JwtUserDetails) userDetails;
-        String username = getUsernameFromToken(token);
-        return (username.equals(user.getUsername())&& !isTokenExpired(token));
+        String userId = getUsernameFromToken(token);
+        return (userId.equals(user.getUserId())&& !isTokenExpired(token));
     }
 
 }

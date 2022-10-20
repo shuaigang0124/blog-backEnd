@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.gsg.blog.dto.EsPage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
@@ -461,31 +462,42 @@ public class ESearchUtils {
             // ---------------- lambda表达式写法（嵌套搜索查询）------------------
 
             MatchQuery of = null;
-            for (String q : query) {
-                of = MatchQuery.of(m -> m
-                        // 标题字段名
-                        .field(q)
-                        .query(keyword)
-                );
-            }
+            SearchResponse<Object> response = null;
+            if (ObjectUtils.isNotEmpty(query) && StringUtils.isNotEmpty(keyword)) {
+                for (String q : query) {
+                    of = MatchQuery.of(m -> m
+                            // 标题字段名
+                            .field(q)
+                            .query(keyword)
+                    );
+                }
 
-            // 查找
-            Query byQuery = of._toQuery();
+                // 查找
+                Query byQuery = of._toQuery();
 
-            // 异步
-            SearchResponse<Object> response = getEsAsyncClient().search(s -> s
-                            .index(iName)
-                            .query(q -> q
-                                            // boolean 嵌套搜索；must需同时满足，should一个满足即可
-                                            .bool(b -> b
-                                                            //.must(byQuery )
-                                                            //.must(byContent)
-                                                            .should(byQuery)
+                // 异步
+                response = getEsAsyncClient().search(s -> s
+                                .index(iName)
+                                .query(q -> q
+                                                // boolean 嵌套搜索；must需同时满足，should一个满足即可
+                                                .bool(b -> b
+                                                                //.must(byQuery )
+                                                                //.must(byContent)
+                                                                .should(byQuery)
 //                                            .should(byContent)
-                                            )
-                            ),
-                    Object.class
-            ).get();
+                                                )
+                                ),
+                        Object.class
+                ).get();
+            } else {
+                response = getEsAsyncClient().search(s -> s
+                                .index(iName)
+                                .query(q -> q
+                                        .matchAll(m -> m))
+                                .size(10000),
+                        Object.class
+                ).get();
+            }
 
             List<Hit<Object>> hits = response.hits().hits();
             List<Object> docs = hits.stream().map(hit -> getEsDocVo(hit.source())).collect(Collectors.toList());

@@ -102,7 +102,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             JwtUserDetails userDetails = this.userDetailsService.loadUserByUsername(userId);
 
             if (jwtTokenUtil.validateToken(authToken, userDetails)
-                    && redisUtils.isExist(userDetails.getUsername())
+                    && redisUtils.isExist(userDetails.getUserId())
             ) {
 
                 log.info("验证通过，将验证信息放入上下文中");
