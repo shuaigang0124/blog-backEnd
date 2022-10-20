@@ -8,6 +8,7 @@ import com.gsg.blog.utils.ESearchUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.*;
 
 @SpringBootTest
@@ -40,7 +41,7 @@ class BlogBackEndApplicationTests {
 
     // -----查询全部索引-----
     @Test
-    public void testGetAllIndex(){
+    public void testGetAllIndex() {
         Set<String> idxs = esUtil.index.all();
         for (String idx : idxs) {
             System.out.println(idx);
@@ -109,13 +110,13 @@ class BlogBackEndApplicationTests {
 //                .setGmtModified(DateFormateUtils.getUtcCurrentLocalDateTime());
         userMap.put(user1.getId(), user1);
 
-        int i  = esUtil.doc.createOrUpdateBth(indexName, userMap);
+        int i = esUtil.doc.createOrUpdateBth(indexName, userMap);
         System.out.println(i);
     }
 
     // -----根据id查询索引中是否存在文档-----
     @Test
-    public void testDocIsExist(){
+    public void testDocIsExist() {
         //System.out.println(EsClientUtil.docIsExist(indexName, "8001"));
         System.out.println(esUtil.doc.isExist(indexName, "test105"));
     }
@@ -123,27 +124,23 @@ class BlogBackEndApplicationTests {
     // -----根据ids批量删除文档-----
     @Test
     public void testDeleteDocument() {
-        List<String> ids = new ArrayList<>();
-        int n = 100;
-        for (int i = 0; i < 5; i++) {
-            n -= 1;
-            ids.add("test" + n);
-        }
+        List<String> ids = Arrays.asList(
+                "MSG20221020675593654");
 
-        int i = esUtil.doc.del(indexName, ids);
+        int i = esUtil.doc.del("message", ids);
         System.out.println(i);
     }
 
     // -----删除文档所有内容及文档-----
     @Test
-    public void testDocDelAll(){
+    public void testDocDelAll() {
         esUtil.doc.delAll("test02");
     }
 
     // -----文章关键字查询-----
     @Test
     public void testQueryDocument() {
-        String[] query = {"email","avatar","userName"};
+        String[] query = {"email", "avatar", "userName"};
         List<Object> docs = esUtil.doc.query(indexName, "帅刚", query);
 //        List<Object> docs = esUtil.doc.query(indexName, null, null);
         for (Object doc : docs) {
@@ -153,9 +150,9 @@ class BlogBackEndApplicationTests {
 
     // -----分页关键字查询-----
     @Test
-    public void testDocPage(){
+    public void testDocPage() {
         //EsPage p = esUtil.doc.page(indexName, "中", 1, 5);
-        String[] fields = {"email","avatar","userName","title","content"};
+        String[] fields = {"email", "avatar", "userName", "title", "content"};
         EsPage p = esUtil.doc.page(indexName, "1", 1, 20, fields);
 //        EsPage p2 = esUtil.doc.page(indexName, "1", "admin67",1, 20,fields);
         for (Object record : p.getRecords()) {
@@ -165,7 +162,7 @@ class BlogBackEndApplicationTests {
 
     // -----查询距离当前最近的文档的时间值-----
     @Test
-    public void testDocLastTime(){
+    public void testDocLastTime() {
         //EsPage p = esUtil.doc.page(indexName, "中", 1, 5);
         //EsPage p = esUtil.doc.page(indexName, "中", "admin",1, 5);
         //EsPage p = esUtil.doc.page(indexName, "中");

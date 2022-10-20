@@ -14,6 +14,9 @@ public interface UserMapper extends BaseMapper<User> {
     /** 增加 */
     int insertUser(UserDTO userDTO);
 
+    /** 查询用户详情 */
+    User getUserById(String userId);
+
     /**
      * 校验用户名称是否唯一
      */
@@ -35,6 +38,6 @@ public interface UserMapper extends BaseMapper<User> {
      * @author gaoshenggang
      * @date  2021/11/19 11:05
      */
-    User getUserByCondition(User userDTO);
+    User getUserByCondition(User user);
 
 }

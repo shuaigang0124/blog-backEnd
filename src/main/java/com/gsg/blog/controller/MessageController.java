@@ -1,12 +1,20 @@
 package com.gsg.blog.controller;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.gsg.blog.dto.MessageDTO;
+import com.gsg.blog.ex.ServiceException;
+import com.gsg.blog.mapper.UserMapper;
+import com.gsg.blog.model.User;
 import com.gsg.blog.utils.*;
+import com.gsg.blog.vo.MessageVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -20,6 +28,9 @@ public class MessageController {
     @Autowired
     ESearchUtils eSearchUtils;
 
+    @Autowired
+    UserMapper userMapper;
+
     // 目标索引
     String indexName = "message";
 
@@ -28,8 +39,8 @@ public class MessageController {
 
         MessageDTO messageDTO = request.getCustomData();
 
-        if (StringUtils.isEmpty(messageDTO.getUserId())) {
-            messageDTO.setUserName("游客");
+        if (StringUtils.isEmpty(messageDTO.getContent()) || StringUtils.isEmpty(messageDTO.getColor())) {
+            throw ServiceException.errorParams("color或content不能为空");
         }
 
         messageDTO.setId("MSG" + PKGenerator.generate())
@@ -37,13 +48,27 @@ public class MessageController {
                 .setGmtCreate(DateFormateUtils.asLocalDateTime(new Date()))
                 .setGmtModified(DateFormateUtils.asLocalDateTime(new Date()));
         // 存数据库
-        String message = eSearchUtils.doc.createOrUpdate(indexName, messageDTO.getId(), messageDTO);
 
-        return Result.ok(BaseUtil.encode(R.ok(message)));
+
+        // 存es
+        eSearchUtils.doc.createOrUpdate(indexName, messageDTO.getId(), messageDTO);
+
+        return Result.ok(BaseUtil.encode(R.ok(messageDTO)));
     }
 
     @PostMapping("/getMsg")
     public Result<?> getMsg() {
-        return Result.ok(BaseUtil.encode(R.ok(eSearchUtils.doc.query(indexName,null,null))));
+        List<Object> list = eSearchUtils.doc.query(indexName, null, null);
+        for (Object obj : list) {
+            Map m = (Map) obj;
+
+            if (ObjectUtil.isNotEmpty(m.get("userId"))) {
+                User user = userMapper.getUserById(m.get("userId").toString());
+                m.put("userName",user.getUserName());
+            } else {
+                m.put("userName","游客");
+            }
+        }
+        return Result.ok(BaseUtil.encode(R.ok(list)));
     }
 }

@@ -60,6 +60,11 @@ public class WebSecurityConfig {
             "/gsg/authentication/form",
             "/gsg/authentication/logout",
             "/gsg/authentication/generateToken",
+
+            "/gsg/msg/getMsg",
+            "/gsg/msg/insertMsg",
+
+
             "/gsg/test"
     };
 

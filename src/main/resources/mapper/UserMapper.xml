@@ -91,5 +91,25 @@
         </where>
     </select>
 
+    <select id="getUserById" resultType="com.gsg.blog.model.User">
+        SELECT
+            u.id,
+            u.user_name,
+            u.password,
+            u.birthday,
+            u.email,
+            u.phone,
+            u.avatar,
+            u.role,
+            u.sex,
+            u.address
+        FROM
+            user u
+        <if test='userId != null'>
+            WHERE
+            u.id = #{userId}
+        </if>
+    </select>
+
 
 </mapper>
