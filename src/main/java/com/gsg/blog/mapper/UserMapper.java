@@ -3,7 +3,10 @@ package com.gsg.blog.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gsg.blog.dto.UserDTO;
 import com.gsg.blog.model.User;
+import com.gsg.blog.vo.UserVO;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author shuaigang
@@ -16,6 +19,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     /** 查询用户详情 */
     User getUserById(String userId);
+
+    /** 查询 */
+    List<UserVO> getAllUser();
 
     /**
      * 校验用户名称是否唯一

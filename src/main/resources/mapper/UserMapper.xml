@@ -111,5 +111,22 @@
         </if>
     </select>
 
+    <select id="getAllUser" resultType="com.gsg.blog.vo.UserVO">
+        SELECT
+            u.id,
+            u.user_name,
+            u.birthday,
+            u.email,
+            u.phone,
+            u.avatar,
+            u.role,
+            u.sex,
+            u.address,
+            u.gmt_create,
+            u.gmt_modified
+        FROM
+            user u
+    </select>
+
 
 </mapper>

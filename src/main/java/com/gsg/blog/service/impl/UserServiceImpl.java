@@ -1,5 +1,6 @@
 package com.gsg.blog.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gsg.blog.dto.UserDTO;
@@ -10,7 +11,9 @@ import com.gsg.blog.service.IUserService;
 import com.gsg.blog.utils.Constants;
 import com.gsg.blog.utils.DateFormateUtils;
 import com.gsg.blog.utils.ESearchUtils;
+import com.gsg.blog.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
@@ -31,14 +34,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void insertUser(UserDTO userDTO) {
         userDTO
                 .setAvatar("/gsg/static-resource/formal/2/20211218/1639807415900-1622025345981709.jpg")
-                .setGmtCreate(DateFormateUtils.asLocalDateTime(new Date()))
-                .setGmtModified(DateFormateUtils.asLocalDateTime(new Date()));
+                .setGmtCreate(new Date())
+                .setGmtModified(new Date());
         int i = userMapper.insertUser(userDTO);
         if (i != 1) {
             throw ServiceException.busy();
         }
-//         存es记得处理gmtGreate
-//        eSearchUtils.doc.createOrUpdate("user", userDTO.getId(), userDTO);
+
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(userDTO,userVO);
+        eSearchUtils.doc.createOrUpdate("user", userVO.getId(), userVO);
     }
 
     /**

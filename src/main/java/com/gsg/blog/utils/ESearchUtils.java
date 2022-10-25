@@ -6,6 +6,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldSort;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.mapping.FieldType;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.ExistsRequest;
 import co.elastic.clients.elasticsearch.core.*;
@@ -31,6 +32,7 @@ import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -439,9 +441,41 @@ public class ESearchUtils {
             return Long.valueOf(JSON.parseObject(doc.toString()).getString("time"));
         }
 
+        @SneakyThrows
+        public List<Object> queryById(String indexName, String id) {
+            // 转为小写
+            String iName = indexName.toLowerCase(Locale.ROOT);
+
+            // ---------------- lambda表达式写法（嵌套搜索查询）------------------
+
+            SearchResponse<Object> response = null;
+
+            // 异步
+            response = getEsAsyncClient().search(s -> s
+                            .index(iName)
+                            .query(q -> q
+                                    // boolean 嵌套搜索；must需同时满足，should一个满足即可
+                                    .bool(b -> b
+                                            .must(MatchQuery.of(m -> m
+                                                    // 标题字段名
+                                                    .field("id")
+                                                    .query(id))._toQuery())
+                                    )
+                            ).size(1),
+                    Object.class
+            ).get();
+
+            List<Hit<Object>> hits = response.hits().hits();
+            List<Object> docs = hits.stream().map(hit -> hit.source()).collect(Collectors.toList());
+
+            // 关闭transport
+            close();
+            return docs;
+        }
+
         /**
-         *  查所有文档（包含关键字查询）
-         *  （只要标题和内容中有一个匹配即可）
+         * 查所有文档（包含关键字查询）
+         * （只要标题和内容中有一个匹配即可）
          *
          * @param indexName 索引名称
          * @param keyword   关键字
@@ -513,8 +547,8 @@ public class ESearchUtils {
                                         )
                                         .from(from)
                                         .size(size)
-                                        //按创建时间降序排序
-                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
+                                        //降序排序
+//                                        .sort(b -> b.field(c -> c.field("deleted").order(SortOrder.Desc)))
 //                                        .source(c -> c.filter(d -> d
 //                                                //不包含字段
 //                                                .excludes("id", "age")
@@ -527,15 +561,19 @@ public class ESearchUtils {
                         .search(a -> a.index(iName)
                                         .from(from)
                                         .size(size)
-                                        //按创建时间降序排序
-                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
+                                        //降序排序
+                                        .sort(b -> b.field(c ->
+                                                c.field("deleted")
+                                                        .unmappedType(FieldType.Date)
+                                                        .order(SortOrder.Desc))
+                                        )
                                 , Object.class).get();
             }
             List<Hit<Object>> hits = response.hits().hits();
             List<Object> docs = hits.stream().map(hit -> hit.source()).collect(Collectors.toList());
 
             if (hits.size() >= size) {
-                List<Object> list = doc.query(indexName, keyword, query,from + size);
+                List<Object> list = doc.query(indexName, keyword, query, from + size);
                 docs.addAll(list);
             }
 
@@ -545,8 +583,8 @@ public class ESearchUtils {
         }
 
         /**
-         *  分页查询文档（包含关键字查询）
-         *  （只要标题和内容中有一个匹配即可）
+         * 分页查询文档（包含关键字查询）
+         * （只要标题和内容中有一个匹配即可）
          *
          * @param indexName 索引名称
          * @param keyword   关键字
@@ -583,8 +621,8 @@ public class ESearchUtils {
                                         //按创建时间降序排序
                                         .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
                                         .source(c -> c.filter(d -> d
-                                                //不包含字段
-                                                .excludes("gmtModified")
+                                                        //不包含字段
+                                                        .excludes("gmtModified")
                                                 //包含字段
 //                                                .includes("name")
                                         ))

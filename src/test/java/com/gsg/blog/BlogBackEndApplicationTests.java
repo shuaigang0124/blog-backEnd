@@ -4,11 +4,14 @@ import cn.hutool.core.date.DateUtil;
 import co.elastic.clients.elasticsearch.indices.IndexState;
 import com.gsg.blog.dto.EsPage;
 import com.gsg.blog.dto.MessageDTO;
+import com.gsg.blog.dto.UserDTO;
+import com.gsg.blog.mapper.UserMapper;
 import com.gsg.blog.model.User;
 import com.gsg.blog.utils.DateFormateUtils;
 import com.gsg.blog.utils.ESearchUtils;
 import com.gsg.blog.utils.PKGenerator;
 import com.gsg.blog.utils.Page;
+import com.gsg.blog.vo.UserVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,15 +28,30 @@ class BlogBackEndApplicationTests {
     @Autowired
     ESearchUtils esUtil;
 
+    @Autowired
+    UserMapper userMapper;
+
     // 目标索引
     String indexName = "shuaigang";
+
+    @Test
+    public void getAllUserInsertES() {
+        List<UserVO> allUser = userMapper.getAllUser();
+        Map<String, Object> map = new HashMap<>();
+        for (UserVO user : allUser) {
+            System.out.println(user.getBirthday());
+            map.put(user.getId(),user);
+        }
+        System.out.println(allUser.size());
+        esUtil.doc.createOrUpdateBth("user", map);
+    }
 
 
     // --------------------------- 工具类方法 ---------------------------------
     // -----创建索引-----
     @Test
     public void testCreateIndexByUtil() {
-        esUtil.index.create("message");
+        esUtil.index.create("user");
     }
 
     // -----查询索引-----
@@ -66,7 +84,7 @@ class BlogBackEndApplicationTests {
         messageDTO.setId("MSG" + PKGenerator.generate())
                 .setUserId("GSG1")
                 .setColor("red")
-                .setContent("测试")
+                .setContent("测试~~~")
                 .setGmtCreate(new Date())
                 .setGmtModified(new Date())
                 .setDeleted(0);
@@ -124,7 +142,7 @@ class BlogBackEndApplicationTests {
     @Test
     public void testDeleteDocument() {
         List<String> ids = Arrays.asList(
-                "MSG20221020675593654");
+                "MSG20221025472600104");
 
         int i = esUtil.doc.del("message", ids);
         System.out.println(i);
@@ -133,7 +151,7 @@ class BlogBackEndApplicationTests {
     // -----删除文档所有内容及文档-----
     @Test
     public void testDocDelAll() {
-        esUtil.doc.delAll("");
+        esUtil.doc.delAll("user");
     }
 
     // -----文章关键字查询,查询所有-----
@@ -144,9 +162,9 @@ class BlogBackEndApplicationTests {
         page.setFrom(0);
         page.setSize(10);
         // 查询所有
-//        List<Object> docs = esUtil.doc.query(indexName, "帅刚", query, 0);
+        List<Object> docs = esUtil.doc.query(indexName, "帅刚", query, 0);
         // 分页查询
-        List<Object> docs = esUtil.doc.queryPage(indexName, null, null, page);
+//        List<Object> docs = esUtil.doc.queryPage(indexName, null, null, page);
 
         for (Object doc : docs) {
             System.out.println(doc);

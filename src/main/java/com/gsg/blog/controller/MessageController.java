@@ -59,10 +59,10 @@ public class MessageController {
         List<Object> list = eSearchUtils.doc.query(indexName, null, null, 0);
         for (Object obj : list) {
             Map m = (Map) obj;
-
             if (ObjectUtil.isNotEmpty(m.get("userId"))) {
-                User user = userMapper.getUserById(m.get("userId").toString());
-                m.put("userName",user.getUserName());
+                List<Object> user = eSearchUtils.doc.queryById("user", m.get("userId").toString());
+                Map u = (Map) user.get(0);
+                m.put("userName", u.get("userName"));
             } else {
                 m.put("userName","游客");
             }

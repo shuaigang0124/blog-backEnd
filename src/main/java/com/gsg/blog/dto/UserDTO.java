@@ -16,6 +16,7 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @Description: TODO
@@ -47,9 +48,7 @@ public class UserDTO implements Serializable {
 
     /** 生日 */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
-    private LocalDate birthday;
+    private Date birthday;
 
     @NotBlank(message = "邮箱不能为空")
     @Pattern(regexp = "^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$", message = "邮箱格式错误!")
@@ -73,16 +72,14 @@ public class UserDTO implements Serializable {
     /**
      * 创建时间
      */
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
-    private LocalDateTime gmtCreate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date gmtCreate;
 
     /**
      * 修改时间
      */
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
-    private LocalDateTime gmtModified;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date gmtModified;
 
     private String[] ids;
 
