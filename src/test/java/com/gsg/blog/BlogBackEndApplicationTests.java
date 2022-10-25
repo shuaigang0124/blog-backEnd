@@ -1,10 +1,14 @@
 package com.gsg.blog;
 
+import cn.hutool.core.date.DateUtil;
 import co.elastic.clients.elasticsearch.indices.IndexState;
 import com.gsg.blog.dto.EsPage;
+import com.gsg.blog.dto.MessageDTO;
 import com.gsg.blog.model.User;
 import com.gsg.blog.utils.DateFormateUtils;
 import com.gsg.blog.utils.ESearchUtils;
+import com.gsg.blog.utils.PKGenerator;
+import com.gsg.blog.utils.Page;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,20 +62,15 @@ class BlogBackEndApplicationTests {
     // -----创建或更新文档-----
     @Test
     public void testCreateDocument() {
-        User user = new User();
-        user.setId("tes1")
-                .setUserName("帅刚")
-                .setSex(1)
-                .setAddress("杭州")
-                .setAvatar("/state/image/1.png")
-                .setBirthday(DateFormateUtils.asLocalDate(new Date()))
-                .setEmail("gsg@gsg.com")
-                .setPassword("123456")
-                .setPhone("15988888888")
-                .setRole("admin")
-                .setGmtCreate(DateFormateUtils.asLocalDateTime(new Date()))
-                .setGmtModified(DateFormateUtils.asLocalDateTime(new Date()));
-        String res = esUtil.doc.createOrUpdate(indexName, user.getId(), user);
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setId("MSG" + PKGenerator.generate())
+                .setUserId("GSG1")
+                .setColor("red")
+                .setContent("测试")
+                .setGmtCreate(new Date())
+                .setGmtModified(new Date())
+                .setDeleted(0);
+        String res = esUtil.doc.createOrUpdate("message", messageDTO.getId(), messageDTO);
         System.out.println(res);
     }
 
@@ -134,18 +133,25 @@ class BlogBackEndApplicationTests {
     // -----删除文档所有内容及文档-----
     @Test
     public void testDocDelAll() {
-        esUtil.doc.delAll("test02");
+        esUtil.doc.delAll("");
     }
 
-    // -----文章关键字查询-----
+    // -----文章关键字查询,查询所有-----
     @Test
     public void testQueryDocument() {
         String[] query = {"email", "avatar", "userName"};
-        List<Object> docs = esUtil.doc.query(indexName, "帅刚", query);
-//        List<Object> docs = esUtil.doc.query(indexName, null, null);
+        Page page = new Page();
+        page.setFrom(0);
+        page.setSize(10);
+        // 查询所有
+//        List<Object> docs = esUtil.doc.query(indexName, "帅刚", query, 0);
+        // 分页查询
+        List<Object> docs = esUtil.doc.queryPage(indexName, null, null, page);
+
         for (Object doc : docs) {
             System.out.println(doc);
         }
+        System.out.println(docs.size());
     }
 
     // -----分页关键字查询-----

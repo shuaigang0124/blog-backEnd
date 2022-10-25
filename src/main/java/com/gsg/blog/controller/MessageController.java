@@ -1,17 +1,16 @@
 package com.gsg.blog.controller;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.gsg.blog.dto.MessageDTO;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.mapper.UserMapper;
 import com.gsg.blog.model.User;
 import com.gsg.blog.utils.*;
-import com.gsg.blog.vo.MessageVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +44,9 @@ public class MessageController {
 
         messageDTO.setId("MSG" + PKGenerator.generate())
                 .setDeleted(0)
-                .setGmtCreate(DateFormateUtils.asLocalDateTime(new Date()))
-                .setGmtModified(DateFormateUtils.asLocalDateTime(new Date()));
+                .setGmtCreate(new Date())
+                .setGmtModified(new Date());
         // 存数据库
-
 
         // 存es
         eSearchUtils.doc.createOrUpdate(indexName, messageDTO.getId(), messageDTO);
@@ -58,7 +56,7 @@ public class MessageController {
 
     @PostMapping("/getMsg")
     public Result<?> getMsg() {
-        List<Object> list = eSearchUtils.doc.query(indexName, null, null);
+        List<Object> list = eSearchUtils.doc.query(indexName, null, null, 0);
         for (Object obj : list) {
             Map m = (Map) obj;
 

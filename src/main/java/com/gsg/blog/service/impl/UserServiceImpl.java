@@ -37,7 +37,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (i != 1) {
             throw ServiceException.busy();
         }
-        eSearchUtils.doc.createOrUpdate("user", userDTO.getId(), userDTO);
+//         存es记得处理gmtGreate
+//        eSearchUtils.doc.createOrUpdate("user", userDTO.getId(), userDTO);
     }
 
     /**

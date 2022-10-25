@@ -55,8 +55,6 @@ public class User implements Serializable {
      * 生日
      */
     @TableField("birthday")
-    @JsonDeserialize(using = LocalDateDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateSerializer.class) // 序列化
     private LocalDate birthday;
 
     /**
@@ -99,16 +97,12 @@ public class User implements Serializable {
      * 创建时间
      */
     @TableField("gmt_create")
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
     private LocalDateTime gmtCreate;
 
     /**
      * 修改时间
      */
     @TableField("gmt_modified")
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
     private LocalDateTime gmtModified;
 
 

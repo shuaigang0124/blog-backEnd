@@ -1,14 +1,9 @@
 package com.gsg.blog.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * TODO
@@ -55,15 +50,11 @@ public class MessageDTO implements Serializable {
     /**
      * 创建时间
      */
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
-    private LocalDateTime gmtCreate;
+    private Date gmtCreate;
 
     /**
      * 修改时间
      */
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 反序列化
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 序列化
-    private LocalDateTime gmtModified;
+    private Date gmtModified;
 
 }

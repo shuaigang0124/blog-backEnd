@@ -31,7 +31,6 @@ import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -441,21 +440,15 @@ public class ESearchUtils {
         }
 
         /**
-         * 根据关键字查文档
-         * ---------------------------
-         * 只要标题和内容中有一个匹配即可
-         * ---------------------------
+         *  查所有文档（包含关键字查询）
+         *  （只要标题和内容中有一个匹配即可）
          *
          * @param indexName 索引名称
          * @param keyword   关键字
          * @return List 集合
          */
         @SneakyThrows
-        public List<Object> query(
-                String indexName,
-                String keyword,
-                String[] query
-        ) {
+        public List<Object> query(String indexName, String keyword, String[] query, Integer from) {
             // 转为小写
             String iName = indexName.toLowerCase(Locale.ROOT);
 
@@ -463,7 +456,44 @@ public class ESearchUtils {
 
             MatchQuery of = null;
             SearchResponse<Object> response = null;
+            Integer size = 10000;
+//            if (ObjectUtils.isNotEmpty(query) && StringUtils.isNotEmpty(keyword)) {
+//                for (String q : query) {
+//                    of = MatchQuery.of(m -> m
+//                            // 标题字段名
+//                            .field(q)
+//                            .query(keyword)
+//                    );
+//                }
+//
+//                // 查找
+//                Query byQuery = of._toQuery();
+//
+//                // 异步
+//                response = getEsAsyncClient().search(s -> s
+//                                .index(iName)
+//                                .query(q -> q
+//                                                // boolean 嵌套搜索；must需同时满足，should一个满足即可
+//                                                .bool(b -> b
+//                                                                //.must(byQuery )
+//                                                                //.must(byContent)
+//                                                                .should(byQuery)
+////                                            .should(byContent)
+//                                                )
+//                                ),
+//                        Object.class
+//                ).get();
+//            } else {
+//                response = getEsAsyncClient().search(s -> s
+//                                .index(iName)
+//                                .query(q -> q
+//                                        .matchAll(m -> m))
+//                                .size(10000),
+//                        Object.class
+//                ).get();
+//            }
             if (ObjectUtils.isNotEmpty(query) && StringUtils.isNotEmpty(keyword)) {
+
                 for (String q : query) {
                     of = MatchQuery.of(m -> m
                             // 标题字段名
@@ -475,36 +505,112 @@ public class ESearchUtils {
                 // 查找
                 Query byQuery = of._toQuery();
 
-                // 异步
-                response = getEsAsyncClient().search(s -> s
-                                .index(iName)
-                                .query(q -> q
+                response = getEsAsyncClient()
+                        .search(a -> a.index(iName)
+                                        .query(q -> q
                                                 // boolean 嵌套搜索；must需同时满足，should一个满足即可
-                                                .bool(b -> b
-                                                                //.must(byQuery )
-                                                                //.must(byContent)
-                                                                .should(byQuery)
-//                                            .should(byContent)
-                                                )
-                                ),
-                        Object.class
-                ).get();
+                                                .bool(b -> b.should(byQuery))
+                                        )
+                                        .from(from)
+                                        .size(size)
+                                        //按创建时间降序排序
+                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
+//                                        .source(c -> c.filter(d -> d
+//                                                //不包含字段
+//                                                .excludes("id", "age")
+//                                                //包含字段
+//                                                .includes("name")
+//                                        ))
+                                , Object.class).get();
             } else {
-                response = getEsAsyncClient().search(s -> s
-                                .index(iName)
-                                .query(q -> q
-                                        .matchAll(m -> m))
-                                .size(10000),
-                        Object.class
-                ).get();
+                response = getEsAsyncClient()
+                        .search(a -> a.index(iName)
+                                        .from(from)
+                                        .size(size)
+                                        //按创建时间降序排序
+                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
+                                , Object.class).get();
             }
-
             List<Hit<Object>> hits = response.hits().hits();
-            List<Object> docs = hits.stream().map(hit -> getEsDocVo(hit.source())).collect(Collectors.toList());
+            List<Object> docs = hits.stream().map(hit -> hit.source()).collect(Collectors.toList());
+
+            if (hits.size() >= size) {
+                List<Object> list = doc.query(indexName, keyword, query,from + size);
+                docs.addAll(list);
+            }
 
             // 关闭transport
             close();
+            return docs;
+        }
 
+        /**
+         *  分页查询文档（包含关键字查询）
+         *  （只要标题和内容中有一个匹配即可）
+         *
+         * @param indexName 索引名称
+         * @param keyword   关键字
+         * @return List 集合
+         */
+        @SneakyThrows
+        public List<Object> queryPage(String indexName, String keyword, String[] query, Page page) {
+            // 转为小写
+            String iName = indexName.toLowerCase(Locale.ROOT);
+
+            // ---------------- lambda表达式写法（嵌套搜索查询）------------------
+            MatchQuery of = null;
+            SearchResponse<Object> response = null;
+
+            if (ObjectUtils.isNotEmpty(query) && StringUtils.isNotEmpty(keyword)) {
+                for (String q : query) {
+                    of = MatchQuery.of(m -> m
+                            // 标题字段名
+                            .field(q)
+                            .query(keyword));
+                }
+
+                // 查找
+                Query byQuery = of._toQuery();
+
+                response = getEsAsyncClient()
+                        .search(a -> a.index(iName)
+                                        .query(q -> q
+                                                // boolean 嵌套搜索；must需同时满足，should一个满足即可
+                                                .bool(b -> b.should(byQuery))
+                                        )
+                                        .from(page.getFrom())
+                                        .size(page.getSize())
+                                        //按创建时间降序排序
+                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
+                                        .source(c -> c.filter(d -> d
+                                                //不包含字段
+                                                .excludes("gmtModified")
+                                                //包含字段
+//                                                .includes("name")
+                                        ))
+                                , Object.class).get();
+            } else {
+                response = getEsAsyncClient()
+                        .search(a -> a
+                                        .index(iName)
+                                        .from(page.getFrom())
+                                        .size(page.getSize())
+                                        //按创建时间降序排序
+                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
+                                        .source(c -> c.filter(d -> d
+                                                        //不包含字段
+                                                        .excludes("gmtModified")
+                                                //包含字段
+//                                                    .includes("name")
+                                        ))
+                                , Object.class).get();
+            }
+            List<Hit<Object>> hits = response.hits().hits();
+//            List<Object> docs = hits.stream().map(hit -> getEsDocVo(hit.source())).collect(Collectors.toList());
+            List<Object> docs = hits.stream().map(hit -> hit.source()).collect(Collectors.toList());
+
+            // 关闭transport
+            close();
             return docs;
         }
 
