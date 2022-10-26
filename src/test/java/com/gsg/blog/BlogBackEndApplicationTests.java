@@ -2,6 +2,7 @@ package com.gsg.blog;
 
 import cn.hutool.core.date.DateUtil;
 import co.elastic.clients.elasticsearch.indices.IndexState;
+import com.gsg.blog.dto.ArticleDTO;
 import com.gsg.blog.dto.EsPage;
 import com.gsg.blog.dto.MessageDTO;
 import com.gsg.blog.dto.UserDTO;
@@ -46,12 +47,33 @@ class BlogBackEndApplicationTests {
         esUtil.doc.createOrUpdateBth("user", map);
     }
 
+    @Test
+    public void insertArt() {
+        ArticleDTO articleDTO = new ArticleDTO();
+        Integer[] tags = {1,3,4};
+        articleDTO.setId("ATC" + PKGenerator.generate())
+                .setUserId("GSG1")
+                .setTitle("测试0007")
+                .setContent("ceshi测试0000000007")
+                .setOriginal(0)
+                .setTagIds(tags)
+                .setReadNum(0)
+                .setClickNum(0)
+                .setSort(0)
+                .setClassifyId(1)
+                .setDeleted(0)
+                .setGmtCreate(new Date())
+                .setGmtModified(new Date());
+        // 存es
+        esUtil.doc.createOrUpdate("article", articleDTO.getId(), articleDTO);
+    }
+
 
     // --------------------------- 工具类方法 ---------------------------------
     // -----创建索引-----
     @Test
     public void testCreateIndexByUtil() {
-        esUtil.index.create("user");
+        esUtil.index.create("article");
     }
 
     // -----查询索引-----
@@ -151,7 +173,7 @@ class BlogBackEndApplicationTests {
     // -----删除文档所有内容及文档-----
     @Test
     public void testDocDelAll() {
-        esUtil.doc.delAll("user");
+        esUtil.doc.delAll("");
     }
 
     // -----文章关键字查询,查询所有-----
@@ -161,10 +183,17 @@ class BlogBackEndApplicationTests {
         Page page = new Page();
         page.setFrom(0);
         page.setSize(10);
+
+        List<String[]> sortList = new ArrayList<>();
+        String[] s1 = {"sort","Desc"};
+        String[] s2 = {"gmtCreate","Desc"};
+        sortList.add(s1);
+        sortList.add(s2);
+
         // 查询所有
-        List<Object> docs = esUtil.doc.query(indexName, "帅刚", query, 0);
+//        List<Object> docs = esUtil.doc.query("article", null, null, 0, sortList);
         // 分页查询
-//        List<Object> docs = esUtil.doc.queryPage(indexName, null, null, page);
+        List<Object> docs = esUtil.doc.queryPage("article", null, null, page, sortList);
 
         for (Object doc : docs) {
             System.out.println(doc);

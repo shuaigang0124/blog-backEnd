@@ -21,6 +21,7 @@ import co.elastic.clients.json.JsonData;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import co.elastic.clients.util.ObjectBuilder;
 import com.alibaba.fastjson.JSON;
 import com.gsg.blog.dto.EsPage;
 import lombok.SneakyThrows;
@@ -28,6 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,6 +39,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -479,10 +484,19 @@ public class ESearchUtils {
          *
          * @param indexName 索引名称
          * @param keyword   关键字
+         * @param query     关键字查找的字段数组
+         * @param from      从第几条开始查询（主要提供分页查询使用）
+         * @param sortList  排序数组
          * @return List 集合
          */
         @SneakyThrows
-        public List<Object> query(String indexName, String keyword, String[] query, Integer from) {
+        public List<Object> query(
+                String indexName,
+                String keyword,
+                String[] query,
+                Integer from,
+                List<String[]> sortList
+        ) {
             // 转为小写
             String iName = indexName.toLowerCase(Locale.ROOT);
 
@@ -491,43 +505,7 @@ public class ESearchUtils {
             MatchQuery of = null;
             SearchResponse<Object> response = null;
             Integer size = 10000;
-//            if (ObjectUtils.isNotEmpty(query) && StringUtils.isNotEmpty(keyword)) {
-//                for (String q : query) {
-//                    of = MatchQuery.of(m -> m
-//                            // 标题字段名
-//                            .field(q)
-//                            .query(keyword)
-//                    );
-//                }
-//
-//                // 查找
-//                Query byQuery = of._toQuery();
-//
-//                // 异步
-//                response = getEsAsyncClient().search(s -> s
-//                                .index(iName)
-//                                .query(q -> q
-//                                                // boolean 嵌套搜索；must需同时满足，should一个满足即可
-//                                                .bool(b -> b
-//                                                                //.must(byQuery )
-//                                                                //.must(byContent)
-//                                                                .should(byQuery)
-////                                            .should(byContent)
-//                                                )
-//                                ),
-//                        Object.class
-//                ).get();
-//            } else {
-//                response = getEsAsyncClient().search(s -> s
-//                                .index(iName)
-//                                .query(q -> q
-//                                        .matchAll(m -> m))
-//                                .size(10000),
-//                        Object.class
-//                ).get();
-//            }
             if (ObjectUtils.isNotEmpty(query) && StringUtils.isNotEmpty(keyword)) {
-
                 for (String q : query) {
                     of = MatchQuery.of(m -> m
                             // 标题字段名
@@ -535,45 +513,61 @@ public class ESearchUtils {
                             .query(keyword)
                     );
                 }
-
                 // 查找
                 Query byQuery = of._toQuery();
+                if (sortList == null) {
+                    response = getEsAsyncClient()
+                            .search(a -> a.index(iName)
+                                            .query(q -> q.bool(b -> b.should(byQuery))).from(from).size(size)
+//                                            .source(c -> c.filter(d -> d
+//                                                    //不包含字段
+//                                                    .excludes("id","userId")
+//                                                    //包含字段
+//                                                    .includes("id")
+//                                            ))
+                                    , Object.class).get();
 
-                response = getEsAsyncClient()
-                        .search(a -> a.index(iName)
-                                        .query(q -> q
-                                                // boolean 嵌套搜索；must需同时满足，should一个满足即可
-                                                .bool(b -> b.should(byQuery))
-                                        )
-                                        .from(from)
-                                        .size(size)
-                                        //降序排序
-//                                        .sort(b -> b.field(c -> c.field("deleted").order(SortOrder.Desc)))
-//                                        .source(c -> c.filter(d -> d
-//                                                //不包含字段
-//                                                .excludes("id", "age")
-//                                                //包含字段
-//                                                .includes("name")
-//                                        ))
-                                , Object.class).get();
+                } else {
+                    // 目前至多2个排序条件
+                    if (sortList.size() == 1) {
+                        response = getEsAsyncClient()
+                                .search(a -> a.index(iName)
+                                                .query(q -> q.bool(b -> b.should(byQuery))).from(from).size(size)
+                                                .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                        , Object.class).get();
+                    } else {
+                        response = getEsAsyncClient()
+                                .search(a -> a.index(iName)
+                                                .query(q -> q.bool(b -> b.should(byQuery))).from(from).size(size)
+                                                .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                                .sort(b -> b.field(c -> c.field(sortList.get(1)[0]).order(SortOrder.valueOf(sortList.get(1)[1]))))
+                                        , Object.class).get();
+                    }
+                }
             } else {
-                response = getEsAsyncClient()
-                        .search(a -> a.index(iName)
-                                        .from(from)
-                                        .size(size)
-                                        //降序排序
-                                        .sort(b -> b.field(c ->
-                                                c.field("deleted")
-                                                        .unmappedType(FieldType.Date)
-                                                        .order(SortOrder.Desc))
-                                        )
-                                , Object.class).get();
+                if (sortList == null) {
+                    response = getEsAsyncClient()
+                            .search(a -> a.index(iName).from(from).size(size), Object.class).get();
+                } else {
+                    if (sortList.size() == 1) {
+                        response = getEsAsyncClient()
+                                .search(a -> a.index(iName).from(from).size(size)
+                                                .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                        , Object.class).get();
+                    } else {
+                        response = getEsAsyncClient()
+                                .search(a -> a.index(iName).from(from).size(size)
+                                                .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                                .sort(b -> b.field(c -> c.field(sortList.get(1)[0]).order(SortOrder.valueOf(sortList.get(1)[1]))))
+                                        , Object.class).get();
+                    }
+                }
             }
             List<Hit<Object>> hits = response.hits().hits();
             List<Object> docs = hits.stream().map(hit -> hit.source()).collect(Collectors.toList());
 
             if (hits.size() >= size) {
-                List<Object> list = doc.query(indexName, keyword, query, from + size);
+                List<Object> list = doc.query(indexName, keyword, query, from + size, sortList);
                 docs.addAll(list);
             }
 
@@ -588,10 +582,13 @@ public class ESearchUtils {
          *
          * @param indexName 索引名称
          * @param keyword   关键字
-         * @return List 集合
+         * @param query     查询关键字的字段
+         * @param page      分页参数
+         * @param sortList  排序参数
+         * @return List     集合
          */
         @SneakyThrows
-        public List<Object> queryPage(String indexName, String keyword, String[] query, Page page) {
+        public List<Object> queryPage(String indexName, String keyword, String[] query, Page page, List<String[]> sortList) {
             // 转为小写
             String iName = indexName.toLowerCase(Locale.ROOT);
 
@@ -601,49 +598,46 @@ public class ESearchUtils {
 
             if (ObjectUtils.isNotEmpty(query) && StringUtils.isNotEmpty(keyword)) {
                 for (String q : query) {
-                    of = MatchQuery.of(m -> m
-                            // 标题字段名
-                            .field(q)
-                            .query(keyword));
+                    of = MatchQuery.of(m -> m.field(q).query(keyword));
                 }
-
-                // 查找
                 Query byQuery = of._toQuery();
-
-                response = getEsAsyncClient()
-                        .search(a -> a.index(iName)
-                                        .query(q -> q
-                                                // boolean 嵌套搜索；must需同时满足，should一个满足即可
-                                                .bool(b -> b.should(byQuery))
-                                        )
-                                        .from(page.getFrom())
-                                        .size(page.getSize())
-                                        //按创建时间降序排序
-                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
-                                        .source(c -> c.filter(d -> d
-                                                        //不包含字段
-                                                        .excludes("gmtModified")
-                                                //包含字段
-//                                                .includes("name")
-                                        ))
-                                , Object.class).get();
+                if (sortList == null) {
+                    response = getEsAsyncClient()
+                            .search(a -> a.index(iName)
+                                            .query(q -> q.bool(b -> b.should(byQuery))).from(page.getFrom()).size(page.getSize())
+                                    , Object.class).get();
+                } else {
+                    if (sortList.size() == 1) {
+                        response = getEsAsyncClient()
+                                .search(a -> a.index(iName)
+                                                .query(q -> q.bool(b -> b.should(byQuery))).from(page.getFrom()).size(page.getSize())
+                                                .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                        , Object.class).get();
+                    } else {
+                        response = getEsAsyncClient()
+                                .search(a -> a.index(iName)
+                                                .query(q -> q.bool(b -> b.should(byQuery))).from(page.getFrom()).size(page.getSize())
+                                                .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                                .sort(b -> b.field(c -> c.field(sortList.get(1)[0]).order(SortOrder.valueOf(sortList.get(1)[1]))))
+                                        , Object.class).get();
+                    }
+                }
             } else {
-                response = getEsAsyncClient()
-                        .search(a -> a
-                                        .index(iName)
-                                        .from(page.getFrom())
-                                        .size(page.getSize())
-                                        //按创建时间降序排序
-                                        .sort(b -> b.field(c -> c.field("gmtCreate").order(SortOrder.Desc)))
-                                        .source(c -> c.filter(d -> d
-                                                        //不包含字段
-                                                        .excludes("gmtModified")
-                                                //包含字段
-//                                                    .includes("name")
-                                        ))
-                                , Object.class).get();
+                if (sortList.size() == 1) {
+                    response = getEsAsyncClient()
+                            .search(a -> a.index(iName).from(page.getFrom()).size(page.getSize())
+                                            .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                    , Object.class).get();
+                } else {
+                    response = getEsAsyncClient()
+                            .search(a -> a.index(iName).from(page.getFrom()).size(page.getSize())
+                                            .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
+                                            .sort(b -> b.field(c -> c.field(sortList.get(1)[0]).order(SortOrder.valueOf(sortList.get(1)[1]))))
+                                    , Object.class).get();
+                }
             }
             List<Hit<Object>> hits = response.hits().hits();
+            // 添加处理创建时间距离当前时间多久的字段
 //            List<Object> docs = hits.stream().map(hit -> getEsDocVo(hit.source())).collect(Collectors.toList());
             List<Object> docs = hits.stream().map(hit -> hit.source()).collect(Collectors.toList());
 
@@ -1117,6 +1111,12 @@ public class ESearchUtils {
     @Value("${es.port}")
     private Integer port;
 
+    @Value("${es.username}")
+    private String username;
+
+    @Value("${es.password}")
+    private String password;
+
     /**
      * 同步客户端；调用结束后，需调用close()关闭transport
      *
@@ -1146,9 +1146,11 @@ public class ESearchUtils {
     private ElasticsearchTransport getEsTransport() {
         host = StringUtils.isEmpty(host) ? "localhost" : host;
         port = Objects.isNull(port) ? 9200 : port;
-
+        BasicCredentialsProvider provider = new BasicCredentialsProvider();
+        provider.setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials(username, password));
         RestClient restClient = RestClient.builder(
-                new HttpHost(host, port)).build();
+                new HttpHost(host, port)).setHttpClientConfigCallback(h -> h.setDefaultCredentialsProvider(provider)).build();
 
         // Create the transport with a Jackson mapper
         transport = new RestClientTransport(

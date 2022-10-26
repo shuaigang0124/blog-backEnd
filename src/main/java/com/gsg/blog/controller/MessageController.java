@@ -56,13 +56,21 @@ public class MessageController {
 
     @PostMapping("/getMsg")
     public Result<?> getMsg() {
-        List<Object> list = eSearchUtils.doc.query(indexName, null, null, 0);
+        List<Object> list = eSearchUtils.doc.query(indexName, null, null, 0, null);
+        String userId = null;
+        String userName = null;
         for (Object obj : list) {
             Map m = (Map) obj;
             if (ObjectUtil.isNotEmpty(m.get("userId"))) {
-                List<Object> user = eSearchUtils.doc.queryById("user", m.get("userId").toString());
-                Map u = (Map) user.get(0);
-                m.put("userName", u.get("userName"));
+                if (!m.get("userId").toString().equals(userId)) {
+                    List<Object> user = eSearchUtils.doc.queryById("user", m.get("userId").toString());
+                    Map u = (Map) user.get(0);
+                    m.put("userName", u.get("userName"));
+                    userId = m.get("userId").toString();
+                    userName = u.get("userName").toString();
+                } else {
+                    m.put("userName", userName);
+                }
             } else {
                 m.put("userName","游客");
             }
