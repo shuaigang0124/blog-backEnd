@@ -29,11 +29,6 @@ public class MessageDTO implements Serializable {
     private String userId;
 
     /**
-     * 用户名
-     */
-    private String userName;
-
-    /**
      * 文字颜色
      */
     private String color;
