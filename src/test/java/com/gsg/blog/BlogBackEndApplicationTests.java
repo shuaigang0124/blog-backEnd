@@ -181,8 +181,6 @@ class BlogBackEndApplicationTests {
     public void testQueryDocument() {
         String[] query = {"email", "avatar", "userName"};
         Page page = new Page();
-        page.setFrom(0);
-        page.setSize(10);
 
         List<String[]> sortList = new ArrayList<>();
         String[] s1 = {"sort","Desc"};
@@ -191,9 +189,9 @@ class BlogBackEndApplicationTests {
         sortList.add(s2);
 
         // 查询所有
-//        List<Object> docs = esUtil.doc.query("article", null, null, 0, sortList);
+        List<Object> docs = esUtil.doc.query("message", null, null, 0, null);
         // 分页查询
-        List<Object> docs = esUtil.doc.queryPage("article", null, null, page, sortList);
+//        List<Object> docs = esUtil.doc.queryPage("article", null, null, page, sortList);
 
         for (Object doc : docs) {
             System.out.println(doc);

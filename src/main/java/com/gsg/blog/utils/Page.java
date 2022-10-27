@@ -20,11 +20,6 @@ public class Page implements Serializable {
     private Integer index = 1;
 
     /**
-     * 开始
-     */
-    private Integer from = 1;
-
-    /**
      * 每页大小
      */
     private Integer size = 10;

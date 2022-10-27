@@ -24,6 +24,7 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.clients.util.ObjectBuilder;
 import com.alibaba.fastjson.JSON;
 import com.gsg.blog.dto.EsPage;
+import com.gsg.blog.vo.PageResponseVO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -588,7 +589,7 @@ public class ESearchUtils {
          * @return List     集合
          */
         @SneakyThrows
-        public List<Object> queryPage(String indexName, String keyword, String[] query, Page page, List<String[]> sortList) {
+        public PageResponseVO<Object> queryPage(String indexName, String keyword, String[] query, Page page, List<String[]> sortList) {
             // 转为小写
             String iName = indexName.toLowerCase(Locale.ROOT);
 
@@ -604,19 +605,22 @@ public class ESearchUtils {
                 if (sortList == null) {
                     response = getEsAsyncClient()
                             .search(a -> a.index(iName)
-                                            .query(q -> q.bool(b -> b.should(byQuery))).from(page.getFrom()).size(page.getSize())
+                                            .query(q -> q.bool(b -> b.should(byQuery)))
+                                            .from((page.getIndex() - 1) * page.getSize()).size(page.getSize())
                                     , Object.class).get();
                 } else {
                     if (sortList.size() == 1) {
                         response = getEsAsyncClient()
                                 .search(a -> a.index(iName)
-                                                .query(q -> q.bool(b -> b.should(byQuery))).from(page.getFrom()).size(page.getSize())
+                                                .from((page.getIndex() - 1) * page.getSize()).size(page.getSize())
+                                                .query(q -> q.bool(b -> b.should(byQuery)))
                                                 .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
                                         , Object.class).get();
                     } else {
                         response = getEsAsyncClient()
                                 .search(a -> a.index(iName)
-                                                .query(q -> q.bool(b -> b.should(byQuery))).from(page.getFrom()).size(page.getSize())
+                                                .query(q -> q.bool(b -> b.should(byQuery)))
+                                                .from((page.getIndex() - 1) * page.getSize()).size(page.getSize())
                                                 .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
                                                 .sort(b -> b.field(c -> c.field(sortList.get(1)[0]).order(SortOrder.valueOf(sortList.get(1)[1]))))
                                         , Object.class).get();
@@ -625,25 +629,33 @@ public class ESearchUtils {
             } else {
                 if (sortList.size() == 1) {
                     response = getEsAsyncClient()
-                            .search(a -> a.index(iName).from(page.getFrom()).size(page.getSize())
+                            .search(a -> a.index(iName).from((page.getIndex() - 1) * page.getSize()).size(page.getSize())
                                             .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
                                     , Object.class).get();
                 } else {
                     response = getEsAsyncClient()
-                            .search(a -> a.index(iName).from(page.getFrom()).size(page.getSize())
+                            .search(a -> a.index(iName).from((page.getIndex() - 1) * page.getSize()).size(page.getSize())
                                             .sort(b -> b.field(c -> c.field(sortList.get(0)[0]).order(SortOrder.valueOf(sortList.get(0)[1]))))
                                             .sort(b -> b.field(c -> c.field(sortList.get(1)[0]).order(SortOrder.valueOf(sortList.get(1)[1]))))
                                     , Object.class).get();
                 }
             }
+
             List<Hit<Object>> hits = response.hits().hits();
+
             // 添加处理创建时间距离当前时间多久的字段
 //            List<Object> docs = hits.stream().map(hit -> getEsDocVo(hit.source())).collect(Collectors.toList());
             List<Object> docs = hits.stream().map(hit -> hit.source()).collect(Collectors.toList());
 
+            PageResponseVO<Object> vo = new PageResponseVO<>();
+            vo.setCurrentPage(page.getIndex())
+                    .setCount(hits.size())
+                    .setTotalCount(response.hits().total().value())
+                    .setResultList(docs);
+
             // 关闭transport
             close();
-            return docs;
+            return vo;
         }
 
         /**

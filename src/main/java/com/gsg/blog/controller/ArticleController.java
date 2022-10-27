@@ -12,6 +12,7 @@ import com.gsg.blog.dto.MessageDTO;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.mapper.UserMapper;
 import com.gsg.blog.utils.*;
+import com.gsg.blog.vo.PageResponseVO;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -81,20 +82,18 @@ public class ArticleController {
     }
 
     @PostMapping("/getArticle")
-    public Result<?> getMsg() {
+    public Result<?> getArticle(@RequestBody Request<Page> request) {
+        Page page = request.getCustomData();
         List<String[]> sortList = new ArrayList<>();
         String[] s1 = {"sort","Desc"};
         String[] s2 = {"gmtCreate","Desc"};
         sortList.add(s1);
         sortList.add(s2);
-        Page page = new Page();
-        page.setFrom(0);
-        page.setSize(10);
-        List<Object> list = eSearchUtils.doc.queryPage(indexName, null, null, page, sortList);
+        PageResponseVO<Object> vo = eSearchUtils.doc.queryPage(indexName, null, null, page, sortList);
         String userId = null;
         String userName = null;
         String avatar = null;
-        for (Object obj : list) {
+        for (Object obj : vo.getResultList()) {
             Map m = (Map) obj;
             if (ObjectUtil.isNotEmpty(m.get("userId"))) {
                 if (!m.get("userId").toString().equals(userId)) {
@@ -113,7 +112,7 @@ public class ArticleController {
                 throw ServiceException.notFound("未获取到作者逐渐id");
             }
         }
-        return Result.ok(BaseUtil.encode(R.ok(list)));
+        return Result.ok(BaseUtil.encode(R.ok(vo)));
     }
 
 //    @SneakyThrows

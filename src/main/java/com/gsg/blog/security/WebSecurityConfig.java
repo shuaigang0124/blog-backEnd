@@ -64,6 +64,8 @@ public class WebSecurityConfig {
             "/gsg/msg/getMsg",
             "/gsg/msg/insertMsg",
 
+//            "/gsg/atc/insertArticle",
+            "/gsg/atc/getArticle",
 
             "/gsg/test"
     };
