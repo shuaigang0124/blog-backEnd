@@ -15,7 +15,7 @@ public class Result<T> implements Serializable {
 
     private String version =  "V1";
 
-    private String encryptionType = "base64";
+//    private String encryptionType = "base64";
 
     private String data;
 

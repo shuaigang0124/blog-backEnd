@@ -109,18 +109,10 @@ public class ArticleController {
                     m.put("avatar", avatar);
                 }
             } else {
-                throw ServiceException.notFound("未获取到作者逐渐id");
+                throw ServiceException.notFound("未获取到作者主键id");
             }
         }
         return Result.ok(BaseUtil.encode(R.ok(vo)));
     }
-
-//    @SneakyThrows
-//    public static void main(String[] args) throws IOException {
-//        RestHighLevelClient client = new RestHighLevelClient(RestClient.builder( new HttpHost("111.172.248.51", 9200, "http")));
-//        CreateIndexRequest request = new CreateIndexRequest("wo-ke-yi-yong-yi-xia-ni-de-es-ma");
-//        CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
-//        client.close();
-//    }
 
 }
