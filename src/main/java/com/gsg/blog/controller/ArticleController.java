@@ -1,35 +1,21 @@
 package com.gsg.blog.controller;
 
 import cn.hutool.core.util.ObjectUtil;
-import co.elastic.clients.elasticsearch._types.FieldSort;
-import co.elastic.clients.elasticsearch._types.SortOptions;
-import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
-import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
-import co.elastic.clients.util.ObjectBuilder;
 import com.gsg.blog.dto.ArticleDTO;
-import com.gsg.blog.dto.MessageDTO;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.mapper.UserMapper;
 import com.gsg.blog.utils.*;
 import com.gsg.blog.vo.PageResponseVO;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 
 /**
- *
  * @author shuaigang
  * @date 2022/10/19 15:09
  */
@@ -43,7 +29,7 @@ public class ArticleController {
     @Autowired
     UserMapper userMapper;
 
-    // 目标索引
+    /** 目标索引 */
     String indexName = "article";
 
     @PostMapping("/insertArticle")
@@ -85,8 +71,8 @@ public class ArticleController {
     public Result<?> getArticle(@RequestBody Request<Page> request) {
         Page page = request.getCustomData();
         List<String[]> sortList = new ArrayList<>();
-        String[] s1 = {"sort","Desc"};
-        String[] s2 = {"gmtCreate","Desc"};
+        String[] s1 = {"sort", "Desc"};
+        String[] s2 = {"gmtCreate", "Desc"};
         sortList.add(s1);
         sortList.add(s2);
         PageResponseVO<Object> vo = eSearchUtils.doc.queryPage(indexName, null, null, page, sortList);
@@ -94,11 +80,11 @@ public class ArticleController {
         String userName = null;
         String avatar = null;
         for (Object obj : vo.getResultList()) {
-            Map m = (Map) obj;
+            Map<String, Object> m = (Map) obj;
             if (ObjectUtil.isNotEmpty(m.get("userId"))) {
                 if (!m.get("userId").toString().equals(userId)) {
                     List<Object> user = eSearchUtils.doc.queryById("user", m.get("userId").toString());
-                    Map u = (Map) user.get(0);
+                    Map<?, ?> u = (Map) user.get(0);
                     m.put("userName", u.get("userName"));
                     m.put("avatar", u.get("avatar"));
                     userId = m.get("userId").toString();

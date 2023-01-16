@@ -27,7 +27,7 @@ public class MessageController {
     @Autowired
     UserMapper userMapper;
 
-    // 目标索引
+    /** 目标索引 */
     String indexName = "message";
 
     @PostMapping("/insertMsg")
@@ -57,11 +57,11 @@ public class MessageController {
         String userId = null;
         String userName = null;
         for (Object obj : list) {
-            Map m = (Map) obj;
+            Map<String, Object> m = (Map) obj;
             if (ObjectUtil.isNotEmpty(m.get("userId"))) {
                 if (!m.get("userId").toString().equals(userId)) {
                     List<Object> user = eSearchUtils.doc.queryById("user", m.get("userId").toString());
-                    Map u = (Map) user.get(0);
+                    Map<?, ?> u = (Map) user.get(0);
                     m.put("userName", u.get("userName"));
                     userId = m.get("userId").toString();
                     userName = u.get("userName").toString();
