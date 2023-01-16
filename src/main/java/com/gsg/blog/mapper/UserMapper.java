@@ -41,7 +41,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     /**
      * 根据条件查询对应的用户信息（内部使用）
-     * @author gaoshenggang
+     * @author shuaigang
      * @date  2021/11/19 11:05
      */
     User getUserByCondition(User user);

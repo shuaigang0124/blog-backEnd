@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @author gaoshenggang
+ * @author shuaigang
  * @date  2021/9/29 17:27
  */
 @Data

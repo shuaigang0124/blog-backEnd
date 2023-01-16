@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author gaoshenggang
+ * @author shuaigang
  * @date  2021/9/29 15:22
  */
 public class PKGenerator {

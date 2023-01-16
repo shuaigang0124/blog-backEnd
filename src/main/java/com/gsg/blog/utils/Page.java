@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * 分页参数
- * @author gaoshenggang
+ * @author shuaigang
  * @date  2021/11/15 13:15
  */
 @Data

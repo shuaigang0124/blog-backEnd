@@ -91,7 +91,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     /**
      * 根据条件查询对应的用户信息（内部登录使用）
-     * @author gaoshenggang
+     * @author shuaigang
      * @date  2021/11/19 11:13
      */
 

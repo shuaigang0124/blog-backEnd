@@ -4,8 +4,8 @@
 
 基于Spring Boot、Spring Security、Redis等的后台Java项目。
 
-* [前端地址](https://github.com/GaoShengGang/blog-frontEnd)
-* [后台地址](https://github.com/GaoShengGang/blog-backEnd)
+* [前端地址](https://github.com/shuaigang0124/blog-frontEnd)
+* [后台地址](https://github.com/shuaigang0124/blog-backEnd)
 * [项目预览](https://shuaigang.top)
 
 #### 注意事项

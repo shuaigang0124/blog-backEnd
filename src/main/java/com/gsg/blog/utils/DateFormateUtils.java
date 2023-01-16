@@ -75,7 +75,7 @@ public class DateFormateUtils {
 
     /**
      * @Description LocalDate 转 Date
-     * @Author gaoshenggang
+     * @Author shuaigang
      **/
     public static Date asDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
@@ -83,7 +83,7 @@ public class DateFormateUtils {
 
     /**
      * @Description LocalDateTime 转 Date
-     * @Author gaoshenggang
+     * @Author shuaigang
      **/
     public static Date asDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
@@ -91,7 +91,7 @@ public class DateFormateUtils {
 
     /**
      * @Description Date 转 LocalDate
-     * @Author gaoshenggang
+     * @Author shuaigang
      **/
     public static LocalDate asLocalDate(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
@@ -99,7 +99,7 @@ public class DateFormateUtils {
 
     /**
      * @Description  Date 转 LocalDateTime
-     * @Author gaoshenggang
+     * @Author shuaigang
      **/
     public static LocalDateTime asLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -126,7 +126,7 @@ public class DateFormateUtils {
     /**
      * @Description 将时间字符串，按指定格式转换成时间戳 Java Date默认转换的时间戳精确到毫秒，13位长
      * 注意 dateStr 和 必须格式一致
-     * @Author gaoshenggang
+     * @Author shuaigang
      * @Param [dateStr, format]
      * @return java.lang.Long
      **/
@@ -176,7 +176,7 @@ public class DateFormateUtils {
 
     /**
      * @Description 将时间戳按指定格式转换成时间字符串
-     * @Author gaoshenggang
+     * @Author shuaigang
      * @Param [time]
      * @return java.lang.String
      **/
@@ -260,7 +260,7 @@ public class DateFormateUtils {
 
     /**
      * @Description 将格式化的日期字符串转为DATE对象
-     * @Author gaoshenggang
+     * @Author shuaigang
      * @param dateStr 格式化时间字符串
      * @param formater 格式
      * @return java.util.Date

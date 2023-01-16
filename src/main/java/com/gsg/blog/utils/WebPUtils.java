@@ -8,7 +8,7 @@ import java.io.IOException;
 
 /**
  * webp图片处理
- * @author gaoshenggang
+ * @author shuaigang
  * @date  2021/12/10 9:22
  */
 @Slf4j

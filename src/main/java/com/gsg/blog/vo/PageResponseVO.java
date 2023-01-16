@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * 分页查询通用返回值VO
- * @author gaoshenggang
+ * @author shuaigang
  * @date  2022/10/27 13:25
  */
 @Data

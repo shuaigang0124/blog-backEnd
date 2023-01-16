@@ -2,7 +2,7 @@ package com.gsg.blog.utils;
 
 
 /**
- * @author gaoshenggang
+ * @author shuaigang
  * @date  2021/9/29 15:38
  */
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

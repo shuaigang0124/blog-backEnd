@@ -25,7 +25,7 @@ public interface IUserService extends IService<User> {
 
     /**
      * 以下接口用于内部后台的登录使用
-     * @author gaoshenggang
+     * @author shuaigang
      * @date  2021/11/15 14:02
      */
 
