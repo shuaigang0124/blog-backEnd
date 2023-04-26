@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.gsg.blog.utils.BaseUtil;
 import com.gsg.blog.utils.JacksonUtils;
 import com.gsg.blog.utils.ParseJsonUtil;
-import com.gsg.blog.utils.Request;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -28,8 +27,6 @@ import java.util.Map;
 public class AvalidatorFilter extends OncePerRequestFilter {
 
     private static final String DATA = "data";
-
-    public static final String CUSTOM_DATA = "customData";
 
     private static final String LOGIN_DATA = "loginData";
 
@@ -80,17 +77,16 @@ public class AvalidatorFilter extends OncePerRequestFilter {
         String dataDecode = BaseUtil.decode(data);
 
         try {
-
-            Request<?> requestParam = JacksonUtils.json2pojo(dataDecode, Request.class);
+            Object requestParam = JacksonUtils.json2pojo(dataDecode, Object.class);
             replace = JacksonUtils.obj2json(requestParam);
             if (StringUtils.isEmpty(replace)) {
                 log.error("请求参数异常, 请检查!");
             }
             dataJson = JSON.parseObject(replace);
-
-            String customData = dataJson.getString(CUSTOM_DATA);
-            log.debug("解析后的body: {}", customData);
-            JSONObject jsonObject = JSON.parseObject(customData);
+            log.debug("解析后的body: {}", dataJson);
+//
+//            String customData = dataJson.getString(DATA);
+//            JSONObject jsonObject = JSON.parseObject(customData);
 
             MyHttpServletRequestWrapper myHttpServletRequestWrapper = new MyHttpServletRequestWrapper(request, replace.getBytes());
             Map paramMap = ParseJsonUtil.stringToCollect(dataDecode);
@@ -98,11 +94,11 @@ public class AvalidatorFilter extends OncePerRequestFilter {
             /* 将解密后的JSON请求参数放入本次 HttpServletRequest*/
             myHttpServletRequestWrapper.setParameterMap(paramMap);
 
-            String loginData = jsonObject.getString(LOGIN_DATA);
+            String loginData = dataJson.getString(LOGIN_DATA);
             if (loginData != null) {
                 JSONObject loginDataJson = JSON.parseObject(loginData);
                 String password = loginDataJson.getString(PASSWORD);
-                String type = jsonObject.getString(TYPE);
+                String type = dataJson.getString(TYPE);
                 String typeAndUserName = null;
                 /* 登录类型为手机号*/
                 if (MOBILE.equals(type)) {

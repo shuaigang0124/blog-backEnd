@@ -56,8 +56,8 @@ public class SecurityController {
     }
 
     @PostMapping("/logout")
-    public Result<?> loginOut(@RequestBody @Valid Request<RequestDTO> request, HttpServletRequest httpServletRequest){
-        String userId = request.getCustomData().getUserId();
+    public Result<?> loginOut(@RequestBody @Valid RequestDTO requestDTO, HttpServletRequest httpServletRequest){
+        String userId = requestDTO.getUserId();
 
         try {
             /*TODO token交由redis管理时效*/

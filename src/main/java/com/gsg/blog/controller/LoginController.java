@@ -47,11 +47,11 @@ public class LoginController {
      * 根据用户id生成新的token令牌
      */
     @PostMapping("/generateToken")
-    public Result<?> generateToken(@RequestBody @Valid Request<RequestDTO> request, BindingResult bindingResult) {
+    public Result<?> generateToken(@RequestBody @Valid RequestDTO requestDTO, BindingResult bindingResult) {
         if (ValidErrorUtil.hasError(bindingResult) != null) {
             return ValidErrorUtil.hasError(bindingResult);
         }
-        String userId = request.getCustomData().getUserId();
+        String userId = requestDTO.getUserId();
         JwtUserDetails userDetails = userDetailService.loadUserByUsername(userId);
         redisUtils.set(userId, "");
         String newToken = jwtTokenUtil.generateToken(userId);

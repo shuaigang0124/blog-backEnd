@@ -33,9 +33,7 @@ public class ArticleController {
     String indexName = "article";
 
     @PostMapping("/insertArticle")
-    public Result<?> insertMsg(@RequestBody Request<ArticleDTO> request) {
-
-        ArticleDTO articleDTO = request.getCustomData();
+    public Result<?> insertMsg(@RequestBody ArticleDTO articleDTO) {
 
         if (StringUtils.isEmpty(articleDTO.getUserId())
                 || articleDTO.getClassifyId() == null
@@ -68,8 +66,7 @@ public class ArticleController {
     }
 
     @PostMapping("/getArticle")
-    public Result<?> getArticle(@RequestBody Request<Page> request) {
-        Page page = request.getCustomData();
+    public Result<?> getArticle(@RequestBody Page page) {
         List<String[]> sortList = new ArrayList<>();
         String[] s1 = {"sort", "Desc"};
         String[] s2 = {"gmtCreate", "Desc"};

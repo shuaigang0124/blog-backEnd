@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gsg.blog.mapper.ChatMsgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gsg.blog.model.ChatMsg">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="room_id" property="roomId" />
+        <result column="content" property="content" />
+        <result column="type" property="type" />
+        <result column="is_latest" property="isLatest" />
+        <result column="send_time" property="sendTime" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <select id="selectLastMsg" resultType="com.gsg.blog.model.ChatMsg">
+        select id
+        from chat_msg
+        where
+            is_latest = 1
+        order by gmt_create desc limit 1,1
+    </select>
+
+    <select id="getChatList" resultType="com.gsg.blog.vo.ChatListVO">
+        select
+               cm.id,
+               cm.user_id,
+               cm.room_id,
+               cm.content,
+               cm.type,
+               cm.is_latest,
+               cm.send_time,
+               u.user_name as userName,
+               u.avatar as userAvatar
+        from chat_msg cm
+        inner join user u on u.id = cm.user_id
+        where
+            cm.room_id = #{roomId}
+        order by cm.send_time desc
+        <if test="pageNum != null and pageSize != null">
+            <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
+            limit #{key_offset},#{pageSize}
+        </if>
+    </select>
+
+</mapper>

@@ -14,8 +14,13 @@ import org.springframework.core.env.ConfigurableEnvironment;
 public class BlogBackEndApplication {
     public static void main(String[] args) {
         ConfigurableEnvironment environment = SpringApplication.run(BlogBackEndApplication.class, args).getEnvironment();
-        log.info("启动成功！！");
-        log.info("服务名:\t{} \t地址: \t[http://localhost]:[{}]", environment.getProperty("spring.application.name"),environment.getProperty("server.port"));
+        log.info("\n----------------------------------------------------------\n\t"+
+                "启动成功！！\n\t"+
+                "服务名:\t{} \n\t" +
+                "地址: \t[http://localhost:{}]\n\t"
+                + "----------------------------------------------------------",
+                environment.getProperty("spring.application.name"),
+                environment.getProperty("server.port"));
     }
 
 }

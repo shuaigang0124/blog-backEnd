@@ -1,5 +1,6 @@
 package com.gsg.blog.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gsg.blog.ex.ServiceException;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -14,9 +15,10 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class R<T> implements Serializable {
 
-    /**
+    /*
      *  自定义错误码避开协议错误码
      *  【4004-参数错误】 【4005-未查询到结果信息】 【4006-token已失效】
      *  【5001-系统内部错误，（通用未定义的错误）】
@@ -54,7 +56,7 @@ public class R<T> implements Serializable {
 
     private int code;
     private String message;
-    private T customData;
+    private T data;
 
     /**
      * 根据传入的错误编码、错误消息构造返回值 R
@@ -70,23 +72,30 @@ public class R<T> implements Serializable {
      * @param data 数据
      */
     public static R<?> construct(int code, String message, Object data){
-        return new R<>().setCode(code).setMessage(message).setCustomData(data);
+        return new R<>().setCode(code).setMessage(message).setData(data);
+    }
+
+    /**
+     * 服务器成功返回用户请求的数据
+     */
+    public static R<?> ok(){
+        return new R<>().setCode(OK).setMessage("success");
     }
 
     /**
      * 服务器成功返回用户请求的数据
      * @param message 消息
      */
-    public static R ok(String message){
-        return new R().setCode(OK).setMessage(message);
+    public static R<?> ok(String message){
+        return new R<>().setCode(OK).setMessage(message);
     }
 
     /**
      * 服务器成功返回用户请求的数据
      * @param data 数据
      */
-    public static R ok(Object data){
-        return new R().setMessage("OK").setCode(OK).setCustomData(data);
+    public static R<?> ok(Object data){
+        return new R<>().setMessage("OK").setCode(OK).setData(data);
     }
 
     /**
@@ -94,22 +103,31 @@ public class R<T> implements Serializable {
      * @param message 消息
      * @param data 数据
      */
-    public static R ok(String message, Object data){
-        return new R().setMessage(message).setCode(OK).setCustomData(data);
+    public static R<?> ok(String message, Object data){
+        return new R<>().setMessage(message).setCode(OK).setData(data);
     }
+
+    public static R<?> failed(Integer code, String message) {
+        return new R<>().setCode(code).setMessage(message);
+    }
+
+    public static R<?> failed(String message) {
+        return new R<>().setCode(INTERNAL_SERVER_ERROR).setMessage(message);
+    }
+
 
     /**
      * 将异常消息复制到返回结果集中
      */
-    public static R failed(ServiceException e){
-        return new R().setCode(e.getCode()).setMessage(e.getMessage());
+    public static R<?> failed(ServiceException e){
+        return new R<>().setCode(e.getCode()).setMessage(e.getMessage());
     }
 
     /**
      * 服务器发生错误，用户将无法判断发出的请求是否成功。
      */
-    public static R failed(Throwable e){
-        return new R().setCode(INTERNAL_SERVER_ERROR).setMessage(e.getMessage());
+    public static R<?> failed(Throwable e){
+        return new R<>().setCode(INTERNAL_SERVER_ERROR).setMessage(e.getMessage());
     }
 
 }

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!-- 读取 application.properties 中的 log.level 属性，如果没有配置，默认 INFO -->
+    <springProperty name="DEV_LEVEL" source="spring.logback.devLevel" defaultValue="DEBUG"/>
+    <springProperty name="TEST_LEVEL" source="spring.logback.testLevel" defaultValue="INFO"/>
+    <springProperty name="PROD_LEVEL" source="spring.logback.prodLevel" defaultValue="INFO"/>
+
+    <springProperty name="maxFileSize" source="spring.logback.max-filesize" defaultValue="200MB"/>
+    <springProperty name="maxHistory" source="spring.logback.max-history" defaultValue="10"/>
+
+    <!-- 文件输出格式 -->
+    <property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %X{traceLogId} %c [%L] -| %msg%n"/>
+    <!-- 文件输出路径 -->
+    <property name="FILE_PATH" value="logs"/>
+    <!-- logger -->
+    <!--<logger name="com.gsg.blog" level="info"/>-->
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Insert the current time formatted as "yyyyMMdd'T'HHmmss" under
+       the key "bySecond" into the logger context. This value will be
+       available to all subsequent configuration elements. -->
+    <!--<timestamp key="byDay" datePattern="yyyy-MM-dd"/>-->
+
+    <!-- 每天产生一个文件 -->
+    <appender name="FILE-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${FILE_PATH}/info.log</file>
+        <append>true</append>
+        <prudent>true</prudent>
+        <!--<filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${FILE_PATH}/info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <MaxHistory>${maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <!-- 每天产生一个文件 -->
+    <appender name="FILE-WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${FILE_PATH}/warn.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 文件路径 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${FILE_PATH}/warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <MaxHistory>${maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <!-- 每天产生一个文件 -->
+    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${FILE_PATH}/error.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 文件路径 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${FILE_PATH}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <MaxHistory>${maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <!-- 开发环境 -->
+    <springProfile name="dev">
+        <root level="${DEV_LEVEL}">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE-INFO"/>
+            <appender-ref ref="FILE-WARN" level="warn"/>
+            <appender-ref ref="FILE-ERROR" level="error"/>
+        </root>
+    </springProfile>
+
+    <!-- 测试环境 -->
+    <springProfile name="test">
+        <root level="${TEST_LEVEL}">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE-INFO"/>
+            <appender-ref ref="FILE-WARN" level="warn"/>
+            <appender-ref ref="FILE-ERROR" level="error"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境 -->
+    <springProfile name="prod">
+        <root level="${PROD_LEVEL}">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE-INFO"/>
+            <appender-ref ref="FILE-WARN" level="warn"/>
+            <appender-ref ref="FILE-ERROR" level="error"/>
+        </root>
+    </springProfile>
+</configuration>

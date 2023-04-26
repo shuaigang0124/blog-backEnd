@@ -3,6 +3,7 @@ package com.gsg.blog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gsg.blog.dto.UserDTO;
 import com.gsg.blog.model.User;
+import com.gsg.blog.vo.UserDetailsVO;
 
 public interface IUserService extends IService<User> {
 
@@ -35,4 +36,5 @@ public interface IUserService extends IService<User> {
 
     User findUserByEmail(String email);
 
+    UserDetailsVO getUserDetails(String userId);
 }

@@ -31,9 +31,7 @@ public class MessageController {
     String indexName = "message";
 
     @PostMapping("/insertMsg")
-    public Result<?> insertMsg(@RequestBody Request<MessageDTO> request) {
-
-        MessageDTO messageDTO = request.getCustomData();
+    public Result<?> insertMsg(@RequestBody MessageDTO messageDTO) {
 
         if (StringUtils.isEmpty(messageDTO.getContent()) || StringUtils.isEmpty(messageDTO.getColor())) {
             throw ServiceException.errorParams("color或content不能为空");

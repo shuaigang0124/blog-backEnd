@@ -2,7 +2,7 @@ package com.gsg.blog.utils;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

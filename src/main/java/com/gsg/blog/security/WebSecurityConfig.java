@@ -67,6 +67,12 @@ public class WebSecurityConfig {
 //            "/gsg/atc/insertArticle",
             "/gsg/atc/getArticle",
 
+            "/gsg/user/getUserDetails",
+            "/gsg/chat/sendMsg",
+            "/gsg/chat/getMsg",
+            "/gsg/chat/getChatList",
+            "/gsg/chat/updateReadState",
+
             "/gsg/test"
     };
 
