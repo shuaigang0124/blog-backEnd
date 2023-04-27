@@ -47,19 +47,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public void insertUser(UserDTO userDTO) {
         userDTO
-                .setAvatar("/gsg/static-resource/formal/2/20211218/1639807415900-1622025345981709.jpg")
-                .setGmtCreate(new Date())
-                .setGmtModified(new Date());
+                .setAvatar("/gsg/static-resource/formal/2/20211218/1639807415900-1622025345981709.jpg");
         int i = userMapper.insertUser(userDTO);
         if (i != 1) {
             throw ServiceException.busy();
         }
-
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(userDTO, userVO);
-        eSearchUtils.doc.createOrUpdate("user", userVO.getId(), userVO);
         // 订阅聊天
         try {
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(userDTO, userVO);
+            eSearchUtils.doc.createOrUpdate("user", userVO.getId(), userVO);
+
             ChatMsg chatMsg = new ChatMsg();
             chatMsg.setUserId(userDTO.getId())
                     .setRoomId(chatExchangeName)
@@ -67,7 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                     .setSendTime(DateFormateUtils.formateDate(new Date(), DateFormateUtils.STANDARD_STAMP2));
             chatMsgService.saveMsg(chatMsg);
         } catch (Exception e) {
-            log.error("用户订阅聊天失败！");
+            log.error("es存储或者用户订阅聊天失败！");
             e.printStackTrace();
         }
     }

@@ -1,5 +1,8 @@
 package com.gsg.blog.controller;
 
+import com.gsg.blog.utils.BaseUtil;
+import com.gsg.blog.utils.R;
+import com.gsg.blog.utils.Result;
 import com.gsg.blog.vo.PageVo;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +28,10 @@ public abstract class BaseController {
                 .setTotal(total)
                 .setList(data);
         return pageVo;
+    }
+
+    protected Result<?> result(R<?> r) {
+        return Result.ok(BaseUtil.encode(r));
     }
 
 }

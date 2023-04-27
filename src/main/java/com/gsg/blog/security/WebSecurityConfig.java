@@ -62,16 +62,15 @@ public class WebSecurityConfig {
             "/gsg/authentication/generateToken",
 
             "/gsg/msg/getMsg",
-            "/gsg/msg/insertMsg",
+//            "/gsg/msg/insertMsg",
 
 //            "/gsg/atc/insertArticle",
             "/gsg/atc/getArticle",
 
             "/gsg/user/getUserDetails",
-            "/gsg/chat/sendMsg",
-            "/gsg/chat/getMsg",
+//            "/gsg/chat/sendMsg",
+//            "/gsg/chat/getMsg",
             "/gsg/chat/getChatList",
-            "/gsg/chat/updateReadState",
 
             "/gsg/test"
     };

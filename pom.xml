@@ -34,6 +34,13 @@
 
     <dependencies>
 
+        <!-- Spring-boot mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
         <!--spring-boot-starter-amqp-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

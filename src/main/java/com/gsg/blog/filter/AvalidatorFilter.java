@@ -2,6 +2,7 @@ package com.gsg.blog.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.utils.BaseUtil;
 import com.gsg.blog.utils.JacksonUtils;
 import com.gsg.blog.utils.ParseJsonUtil;
@@ -75,6 +76,9 @@ public class AvalidatorFilter extends OncePerRequestFilter {
         String data = bodyJson.getString(DATA);
         /* 解码*/
         String dataDecode = BaseUtil.decode(data);
+        if (StringUtils.isEmpty(dataDecode)) {
+            throw ServiceException.errorParams("参数请求异常！");
+        }
 
         try {
             Object requestParam = JacksonUtils.json2pojo(dataDecode, Object.class);
