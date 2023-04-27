@@ -5,6 +5,7 @@ import com.gsg.blog.config.RabbitMQConfig;
 import com.gsg.blog.dto.ChatRequestDTO;
 import com.gsg.blog.model.ChatMsg;
 import com.gsg.blog.ex.ServiceException;
+import com.gsg.blog.vo.ChatListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +29,9 @@ public class ChatUtils {
      * @author shuaigang
      * @date  2022/8/31 13:C1
      */
-    public void publishMsg(ChatMsg chatMsg) {
+    public void publishMsg(ChatListVO chatListVO) {
         // 向MQ中发送信息
-        String msgContentEncode = BaseUtil.encode(chatMsg);
+        String msgContentEncode = BaseUtil.encode(chatListVO);
 
         ChatRequestDTO chatRequestDto = new ChatRequestDTO();
         chatRequestDto.setData(msgContentEncode);
@@ -44,7 +45,7 @@ public class ChatUtils {
         }
 
         assert chatRequestJsonStr != null;
-        RabbitMQConfig.rabbitMqChatClient.publish(queuePrefix + chatMsg.getUserId() + queueSuffix, chatRequestJsonStr);
+        RabbitMQConfig.rabbitMqChatClient.publish(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
     }
 
     /**

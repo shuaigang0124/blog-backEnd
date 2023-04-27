@@ -4,13 +4,16 @@ import com.gsg.blog.dto.ChatMsgDTO;
 import com.gsg.blog.model.ChatMsg;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.mapper.ChatMsgMapper;
+import com.gsg.blog.model.User;
 import com.gsg.blog.service.IChatMsgService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gsg.blog.service.IUserService;
 import com.gsg.blog.utils.ChatUtils;
 import com.gsg.blog.utils.PKGenerator;
 import com.gsg.blog.vo.ChatListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -36,6 +39,9 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
     @Autowired
     private ChatMsgMapper chatMsgMapper;
 
+    @Autowired
+    private IUserService userService;
+
     @Override
     public void sendMsgToUser(ChatMsgDTO chatMsgDTO) {
 
@@ -46,8 +52,13 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
                 .setSendTime(chatMsgDTO.getSendTime());
         // 存储消息
         saveMsg(chatMsg);
+        ChatListVO chatListVO = new ChatListVO();
+        BeanUtils.copyProperties(chatMsg, chatListVO);
+        User userById = userService.findUserById(chatListVO.getUserId());
+        chatListVO.setUserName(userById.getUserName())
+                .setUserAvatar(userById.getAvatar());
         // mq发送消息
-        chatUtils.publishMsg(chatMsg);
+        chatUtils.publishMsg(chatListVO);
     }
 
     @Override
