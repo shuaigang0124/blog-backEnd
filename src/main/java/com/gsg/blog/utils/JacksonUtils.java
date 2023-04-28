@@ -14,34 +14,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author shuaigang
+ * @date  2023/4/28 19:35
+ */
 public class JacksonUtils {
 
-    private final static ObjectMapper objectMapper = new ObjectMapper()
+    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new ParameterNamesModule())
             .registerModule(new Jdk8Module())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .registerModule(new JavaTimeModule());
 
-    private void JsonUtils() {
+    private void jsonUtils() {
 
     }
 
     public static ObjectMapper getInstance() {
-        return objectMapper;
+        return OBJECT_MAPPER;
     }
 
     /**
      * javaBean,list,array convert to json string
      */
     public static String obj2json(Object obj) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(obj);
+        return OBJECT_MAPPER.writeValueAsString(obj);
     }
 
     /**
      * javaBean,list,array convert to json string pretty
      */
     public static String obj2prettyjson(Object obj) throws JsonProcessingException {
-        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
     }
 
     /**
@@ -49,7 +53,7 @@ public class JacksonUtils {
      */
     public static <T> T json2pojo(String jsonStr, Class<T> clazz)
             throws IOException {
-        return objectMapper.readValue(jsonStr, clazz);
+        return OBJECT_MAPPER.readValue(jsonStr, clazz);
     }
 
     /**
@@ -57,7 +61,7 @@ public class JacksonUtils {
      */
     public static Map<String, Object> json2map(String jsonStr)
             throws IOException {
-        return objectMapper.readValue(jsonStr, Map.class);
+        return OBJECT_MAPPER.readValue(jsonStr, Map.class);
     }
 
 
@@ -66,7 +70,7 @@ public class JacksonUtils {
      */
     public static Map<String, String> json2mapString(String jsonStr)
             throws IOException {
-        return objectMapper.readValue(jsonStr,
+        return OBJECT_MAPPER.readValue(jsonStr,
                 new TypeReference<Map<String, String>>() {
                 });
     }
@@ -76,10 +80,10 @@ public class JacksonUtils {
      */
     public static <T> Map<String, T> json2map(String jsonStr, Class<T> clazz)
             throws IOException {
-        Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) objectMapper.readValue(jsonStr,
+        Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) OBJECT_MAPPER.readValue(jsonStr,
                 new TypeReference<Map<String, T>>() {
                 });
-        Map<String, T> result = new HashMap<String, T>();
+        Map<String, T> result = new HashMap<String, T>(map.entrySet().size());
         for (Map.Entry<String, Map<String, Object>> entry : map.entrySet()) {
             result.put(entry.getKey(), map2pojo(entry.getValue(), clazz));
         }
@@ -91,7 +95,7 @@ public class JacksonUtils {
      */
     public static <T> List<T> json2list(String jsonArrayStr, Class<T> clazz)
             throws IOException {
-        List<Map<String, Object>> list = (List<Map<String, Object>>) objectMapper.readValue(jsonArrayStr,
+        List<Map<String, Object>> list = (List<Map<String, Object>>) OBJECT_MAPPER.readValue(jsonArrayStr,
                 new TypeReference<List<T>>() {
                 });
         List<T> result = new ArrayList<T>();
@@ -105,7 +109,7 @@ public class JacksonUtils {
      * map convert to javaBean
      */
     public static <T> T map2pojo(Map map, Class<T> clazz) {
-        return objectMapper.convertValue(map, clazz);
+        return OBJECT_MAPPER.convertValue(map, clazz);
     }
 
 

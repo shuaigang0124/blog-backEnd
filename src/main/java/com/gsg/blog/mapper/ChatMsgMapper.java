@@ -17,8 +17,17 @@ import java.util.List;
  */
 public interface ChatMsgMapper extends BaseMapper<ChatMsg> {
 
+    /**
+     * 查询最后一条聊天消息
+     * @return  chatMsg
+     */
     ChatMsg selectLastMsg();
 
+    /**
+     * 查询聊天信息列表
+     * @param chatMsgDTO    dto
+     * @return  list
+     */
     List<ChatListVO> getChatList(ChatMsgDTO chatMsgDTO);
 
 }

@@ -51,7 +51,7 @@ public class ArticleController {
             articleDTO.setOriginal(0);
         }
 
-        articleDTO.setId("ATC" + PKGenerator.generate())
+        articleDTO.setId("ATC" + PkGenerator.generate())
                 .setReadNum(0)
                 .setClickNum(0)
                 .setDeleted(0)

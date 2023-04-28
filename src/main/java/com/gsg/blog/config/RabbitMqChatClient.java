@@ -2,7 +2,6 @@ package com.gsg.blog.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.gsg.blog.utils.BaseUtil;
-import com.gsg.blog.utils.Constants;
 import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,8 +30,8 @@ public class RabbitMqChatClient {
         RabbitMqChatClient.rabbitMqConnection = rabbitMqConnection;
     }
 
-    String exchangeName = RabbitMQConfig.chatExchangeName;
-    String msgTtl = RabbitMQConfig.ttl;
+    String exchangeName = RabbitMqConfig.chatExchangeName;
+    String msgTtl = RabbitMqConfig.ttl;
 
     List<Object> messageResult = null;
 
@@ -86,8 +85,8 @@ public class RabbitMqChatClient {
              * 参数明细：
              * 1、队列名称 2、是否持久化 3、是否独占此队列 4、队列不用是否自动删除 5、参数（设置队列的TTL）
              */
-            HashMap<String, Object> paramMap = new HashMap<>();
-//            paramMap.put("x-message-ttl", Long.parseLong(msgTtl));
+            HashMap<String, Object> paramMap = new HashMap<>(2);
+            paramMap.put("x-message-ttl", Long.parseLong(msgTtl));
             paramMap.put("x-expires", Long.parseLong(msgTtl));
             channel.queueDeclare(queueName, true, false, false, paramMap);
 

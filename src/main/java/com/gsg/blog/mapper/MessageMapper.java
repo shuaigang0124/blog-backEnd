@@ -16,6 +16,10 @@ import java.util.List;
  */
 public interface MessageMapper extends BaseMapper<Message> {
 
+    /**
+     * 获取留言列表
+     * @return  list
+     */
     List<MessageVO> getMessageList();
 
 }

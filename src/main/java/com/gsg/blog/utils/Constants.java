@@ -59,4 +59,20 @@ public interface Constants {
     /** 校验返回结果码 */
     String UNIQUE = "0";
     String NOT_UNIQUE = "1";
+
+    String CONTENT_TYPE = "multipart/form-data";
+
+    String GET = "GET";
+
+    String WEBP = ".webp";
+    String PNG = ".png";
+    String JPG = ".jpg";
+    String JPEG = ".jpeg";
+    String GIF = ".gif";
+    String BMP = ".bmp";
+
+    int CONTENT_MAX = 100;
+
+    String GSG = "GSG";
+
 }

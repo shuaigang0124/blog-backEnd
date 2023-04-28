@@ -4,6 +4,8 @@ import com.gsg.blog.utils.R;
 
 /**
  * 业务处理异常基类
+ * @author shuaigang
+ * @date  2023/4/28 19:35
  */
 public class ServiceException extends RuntimeException {
     private static final long serialVersionUID = -5027424785213629228L;

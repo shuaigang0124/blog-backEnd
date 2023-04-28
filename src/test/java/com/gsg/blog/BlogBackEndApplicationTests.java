@@ -1,16 +1,14 @@
 package com.gsg.blog;
 
-import cn.hutool.core.date.DateUtil;
 import co.elastic.clients.elasticsearch.indices.IndexState;
 import com.gsg.blog.dto.ArticleDTO;
 import com.gsg.blog.dto.EsPage;
 import com.gsg.blog.dto.MessageDTO;
-import com.gsg.blog.dto.UserDTO;
 import com.gsg.blog.mapper.UserMapper;
 import com.gsg.blog.model.User;
 import com.gsg.blog.utils.DateFormateUtils;
 import com.gsg.blog.utils.ESearchUtils;
-import com.gsg.blog.utils.PKGenerator;
+import com.gsg.blog.utils.PkGenerator;
 import com.gsg.blog.utils.Page;
 import com.gsg.blog.vo.UserVO;
 import org.junit.jupiter.api.Test;
@@ -51,7 +49,7 @@ class BlogBackEndApplicationTests {
     public void insertArt() {
         ArticleDTO articleDTO = new ArticleDTO();
         Integer[] tags = {1,3,4};
-        articleDTO.setId("ATC" + PKGenerator.generate())
+        articleDTO.setId("ATC" + PkGenerator.generate())
                 .setUserId("GSG1")
                 .setTitle("测试0007")
                 .setContent("ceshi测试0000000007")
@@ -103,7 +101,7 @@ class BlogBackEndApplicationTests {
     @Test
     public void testCreateDocument() {
         MessageDTO messageDTO = new MessageDTO();
-        messageDTO.setId("MSG" + PKGenerator.generate())
+        messageDTO.setId("MSG" + PkGenerator.generate())
                 .setUserId("GSG1")
                 .setColor("red")
                 .setContent("测试~~~")

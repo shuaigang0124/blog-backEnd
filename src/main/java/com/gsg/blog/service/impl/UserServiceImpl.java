@@ -13,7 +13,7 @@ import com.gsg.blog.service.IUserService;
 import com.gsg.blog.utils.Constants;
 import com.gsg.blog.utils.DateFormateUtils;
 import com.gsg.blog.utils.ESearchUtils;
-import com.gsg.blog.utils.WebPUtils;
+import com.gsg.blog.utils.WebpUtils;
 import com.gsg.blog.vo.UserDetailsVO;
 import com.gsg.blog.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
@@ -148,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!StringUtils.isEmpty(user.getAvatar())) {
             String avatarPath = user.getAvatar();
             // 20211210 生成WebP图片副本
-            avatarPath = WebPUtils.changePathToWebp("1", avatarPath);
+            avatarPath = WebpUtils.changePathToWebp("1", avatarPath);
             user.setAvatar(avatarPath);
         }
         userDetailsVO.setId(user.getId())

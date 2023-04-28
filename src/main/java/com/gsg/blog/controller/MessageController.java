@@ -1,21 +1,16 @@
 package com.gsg.blog.controller;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.gsg.blog.dto.MessageDTO;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.mapper.UserMapper;
 import com.gsg.blog.model.Message;
 import com.gsg.blog.service.IMessageService;
 import com.gsg.blog.utils.*;
 import com.gsg.blog.vo.MessageVO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -41,10 +36,10 @@ public class MessageController {
     @PostMapping("/insertMsg")
     public Result<?> insertMsg(@Valid @RequestBody Message message) {
 
-        if (message.getContent().length() > 100) {
+        if (message.getContent().length() > Constants.CONTENT_MAX) {
             throw ServiceException.errorParams("内容不得超过100个字符！");
         }
-        message.setId("MSG" + PKGenerator.generate())
+        message.setId("MSG" + PkGenerator.generate())
                 .setDeleted(0);
         // 存数据库
         messageService.insertMessage(message);

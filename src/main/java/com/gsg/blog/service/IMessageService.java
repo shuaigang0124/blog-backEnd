@@ -16,8 +16,16 @@ import java.util.List;
  */
 public interface IMessageService extends IService<Message> {
 
+    /**
+     * 新增留言
+     * @param message   留言
+     */
     void insertMessage(Message message);
 
+    /**
+     * 获取留言列表
+     * @return list
+     */
     List<MessageVO> getMessageList();
 
 }

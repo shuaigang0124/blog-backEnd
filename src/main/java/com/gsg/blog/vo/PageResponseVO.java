@@ -23,7 +23,7 @@ public class PageResponseVO<T> implements Serializable {
     /**
      * @Description 查询数据总条数
      **/
-    private long totalCount;
+    private Long totalCount;
 
     /**
      * @Description 当前页码

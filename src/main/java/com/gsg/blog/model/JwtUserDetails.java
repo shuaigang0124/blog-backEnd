@@ -16,14 +16,14 @@ import java.util.Collection;
 @NoArgsConstructor
 public class JwtUserDetails implements UserDetails { // 实现UserDeails接口
 
-    // 用户id
+    /** 用户id */
     private String userId;
 
-    // 用户名
+    /** 用户名 */
     private String username;
-    // 密码
+    /** 密码 */
     private String password;
-    //角色
+    /** 角色 */
     private String role;
 
     public JwtUserDetails(String userId, String username, String password, String role) {

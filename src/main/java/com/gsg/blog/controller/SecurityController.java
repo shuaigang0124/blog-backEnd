@@ -44,14 +44,6 @@ public class SecurityController {
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     public Result<?> requireAuthentication (HttpServletRequest request, HttpServletResponse response) throws IOException {
         SavedRequest savedRequest = requestCache.getRequest(request, response);
-
-        if (savedRequest != null) {
-            String targetUrl = savedRequest.getRedirectUrl();
-            if (StringUtils.endsWithIgnoreCase(targetUrl,".vue")) {
-                // 跳转登录页
-                redirectStrategy.sendRedirect(request, response, "/Login.vue");
-            }
-        }
         return Result.ok(BaseUtil.encode(R.ok("未认证!")));
     }
 
@@ -60,9 +52,6 @@ public class SecurityController {
         String userId = requestDTO.getUserId();
 
         try {
-            /*TODO token交由redis管理时效*/
-//            String authToken = httpServletRequest.getHeader(jwtProperties.getHeader());
-//            redisUtils.delete(authToken);
             redisUtils.delete(userId);
             log.debug("[{}]已退出!" + userId);
             return Result.ok(BaseUtil.encode(R.ok("退出成功！")));

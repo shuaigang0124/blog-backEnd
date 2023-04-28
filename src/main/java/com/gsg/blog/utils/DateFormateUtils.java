@@ -40,6 +40,9 @@ public class DateFormateUtils {
     public static final String STANDARD_DATE_YEAR = "yyyy";
     public static final String STANDARD_DATE_VF = "2021-01-01T00:00:00";
 
+    private static final Integer LENGTH = 3;
+    private static final Integer SIZE = 5;
+
 //    public static void main(String[] args) {
 //        Date utcCurrentDate = getUtcCurrentDate();
 //        LocalDate utcCurrentLocalDate = getUtcCurrentLocalDate();
@@ -64,8 +67,7 @@ public class DateFormateUtils {
 //    }
 
 
-
-    private DateFormateUtils(){
+    private DateFormateUtils() {
     }
 
     public static String asString(LocalDate localDate) {
@@ -98,7 +100,7 @@ public class DateFormateUtils {
     }
 
     /**
-     * @Description  Date 转 LocalDateTime
+     * @Description Date 转 LocalDateTime
      * @Author shuaigang
      **/
     public static LocalDateTime asLocalDateTime(Date date) {
@@ -108,35 +110,36 @@ public class DateFormateUtils {
     /**
      * 获取精确到秒的时间戳
      * 精确到秒的时间戳10位长，精确到毫秒的时间戳13位长 Java的Date默认到毫秒
+     *
      * @return
      */
-    public static Integer getSecondTimestamp(Date date){
+    public static Integer getSecondTimestamp(Date date) {
         if (null == date) {
             return null;
         }
         String timestamp = String.valueOf(date.getTime());
         int length = timestamp.length();
-        if (length > 3) {
-            return Integer.valueOf(timestamp.substring(0,length-3));
+        if (length > LENGTH) {
+            return Integer.valueOf(timestamp.substring(0, length - 3));
         } else {
             return null;
         }
     }
 
     /**
+     * @return java.lang.Long
      * @Description 将时间字符串，按指定格式转换成时间戳 Java Date默认转换的时间戳精确到毫秒，13位长
      * 注意 dateStr 和 必须格式一致
      * @Author shuaigang
      * @Param [dateStr, format]
-     * @return java.lang.Long
      **/
-    public static Long convert(String dateStr, String format){
-        SimpleDateFormat sdf=new SimpleDateFormat(format);
+    public static Long convert(String dateStr, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
         Long time = 0L;
-        try{
+        try {
             time = sdf.parse(dateStr).getTime();
             return time;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return time;
@@ -175,10 +178,10 @@ public class DateFormateUtils {
     }
 
     /**
+     * @return java.lang.String
      * @Description 将时间戳按指定格式转换成时间字符串
      * @Author shuaigang
      * @Param [time]
-     * @return java.lang.String
      **/
     public static String convert(Long time, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -191,6 +194,7 @@ public class DateFormateUtils {
 
     /**
      * 获取当前时间的格式化时间字符串 ---系统时区
+     *
      * @param format 格式化格式
      * @return String 格式化之后的对象
      */
@@ -202,19 +206,21 @@ public class DateFormateUtils {
 
     /**
      * 获取当前UTC 国际时区的时间的格式化时间字符串
+     *
      * @param format 格式化格式
      * @return String 格式化之后的对象
      */
     public static String formatUtcCurrentDate(String format) {
-        TimeZone timeZoneUTC = TimeZone.getTimeZone("UTC");
-        Date date = Calendar.getInstance(timeZoneUTC).getTime();
+        TimeZone timeZoneUtc = TimeZone.getTimeZone("UTC");
+        Date date = Calendar.getInstance(timeZoneUtc).getTime();
         SimpleDateFormat sdf = new SimpleDateFormat(format);
-        sdf.setTimeZone(timeZoneUTC);
+        sdf.setTimeZone(timeZoneUtc);
         return sdf.format(date);
     }
 
     /**
      * 获取当前UTC 国际时区的时间
+     *
      * @return Date 国际时区的时间
      */
     public static Date getUtcCurrentDate() {
@@ -223,6 +229,7 @@ public class DateFormateUtils {
 
     /**
      * 获取当前UTC 国际时区的时间
+     *
      * @return Date 国际时区的时间
      */
     public static Long getUtcCurrentTimeMillis() {
@@ -231,6 +238,7 @@ public class DateFormateUtils {
 
     /**
      * 获取当前UTC 国际时区的时间
+     *
      * @return LocalDate 国际时区的时间
      */
     public static LocalDate getUtcCurrentLocalDate() {
@@ -239,6 +247,7 @@ public class DateFormateUtils {
 
     /**
      * 获取当前UTC 国际时区的时间
+     *
      * @return LocalDateTime 国际时区的时间
      */
     public static LocalDateTime getUtcCurrentLocalDateTime() {
@@ -246,10 +255,10 @@ public class DateFormateUtils {
     }
 
     /**
-     * @Description 格式化指定日期
-     * @param date 指定日期
+     * @param date     指定日期
      * @param formater 格式
      * @return String 格式化之后的字符串
+     * @Description 格式化指定日期
      */
     public static String formateDate(Date date, String formater) {
         if (!StringUtils.isEmpty(formater)) {
@@ -259,11 +268,11 @@ public class DateFormateUtils {
     }
 
     /**
-     * @Description 将格式化的日期字符串转为DATE对象
-     * @Author shuaigang
-     * @param dateStr 格式化时间字符串
+     * @param dateStr  格式化时间字符串
      * @param formater 格式
      * @return java.util.Date
+     * @Description 将格式化的日期字符串转为DATE对象
+     * @Author shuaigang
      **/
     public static Date getDateFromStr(String dateStr, String formater) {
         try {
@@ -277,6 +286,7 @@ public class DateFormateUtils {
 
     /**
      * 获取指定日期当天的最后时间 YYYYMMDD 235959 999 的日期对象，精确到毫秒
+     *
      * @param date
      * @return
      */
@@ -292,6 +302,7 @@ public class DateFormateUtils {
 
     /**
      * 获取指定日期当天的开始时间 00:00:00.000 的日期对象，精确到毫秒
+     *
      * @param date 需要设置的日期
      * @return Date 日期对象
      */
@@ -328,6 +339,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前日期按 年 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一年的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一年的日期对象
+     *
      * @param offset
      * @return
      */
@@ -341,6 +353,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前日期按 月 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一月的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一月的日期对象
+     *
      * @param offset
      * @return
      */
@@ -354,6 +367,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 日 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取昨日的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取明日的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -367,6 +381,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 小时 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一小时的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一小时的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -380,6 +395,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 分钟 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一分钟的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一分钟的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -393,6 +409,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 秒 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一秒的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一秒的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -406,6 +423,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 年 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取昨日的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取明日的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -420,6 +438,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 日 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取昨日的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取明日的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -434,6 +453,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 小时 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一小时的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一小时的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -448,17 +468,18 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 小时 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一小时的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一小时的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
     public static Date getOffsetHours(Date date, int offset, int symbol) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        if(1 == symbol){
+        if (1 == symbol) {
             offset = ~(offset - 1);
             cal.add(Calendar.HOUR, offset);
             return cal.getTime();
-        }else {
+        } else {
             cal.add(Calendar.HOUR, offset);
             return cal.getTime();
         }
@@ -468,17 +489,18 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 小时 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一小时的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一小时的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
     public static LocalDateTime getOffsetHours(LocalDateTime localDateTime, int offset, int symbol) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(asDate(localDateTime));
-        if(1 == symbol){
+        if (1 == symbol) {
             offset = ~(offset - 1);
             cal.add(Calendar.HOUR, offset);
             return DateFormateUtils.asLocalDateTime(cal.getTime());
-        }else {
+        } else {
             cal.add(Calendar.HOUR, offset);
             return DateFormateUtils.asLocalDateTime(cal.getTime());
         }
@@ -488,6 +510,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 分钟 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一分钟的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一分钟的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -502,6 +525,7 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将当前时间按 秒 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一秒的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一秒的日期对象
+     *
      * @param offset
      * @return Date 结果日期对象
      */
@@ -516,8 +540,9 @@ public class DateFormateUtils {
      * 依据传入的偏移量，将传入的日期按 日 偏移，获取日期对象
      * 如果 offset 为负，则为之前的日期，如 offset=-1，则获取前一天的日期对象
      * 如果 offset 为正，则为之后的日期，如 offset=1，则获取后一天的日期对象
-     * @Param [date, offset]
+     *
      * @return Date 结果日期对象
+     * @Param [date, offset]
      */
     public static Date getDateReverseDay(Date date, int offset) {
         Calendar cal = Calendar.getInstance();
@@ -528,8 +553,9 @@ public class DateFormateUtils {
 
     /**
      * 计算两个日期之间相差的天数，不满一天按0天算
+     *
      * @param start 开始时间
-     * @param end 结束日期
+     * @param end   结束日期
      * @return int 相差天数
      */
     public static int getDaysBetween(Date start, Date end) {
@@ -546,7 +572,7 @@ public class DateFormateUtils {
      * @param end   结束时间 HH:mm:ss
      * @return 是否在配置时间内
      */
-    public static boolean duringTheTime(String begin, String end){
+    public static boolean duringTheTime(String begin, String end) {
         SimpleDateFormat sdfDateTime = new SimpleDateFormat(STANDARD_STAMP2);
         SimpleDateFormat sdfDate = new SimpleDateFormat(STANDARD_DATE_DAY2);
         String nowDate = sdfDate.format(getUtcCurrentDate());
@@ -573,46 +599,48 @@ public class DateFormateUtils {
 
     /**
      * 获取两个时间间隔的分钟数
+     *
      * @param start Date对象
-     * @param end Date对象
+     * @param end   Date对象
      * @return 间隔分钟数
      */
-    public static int minustsBetween(Date start, Date end){
-        return (int)((end.getTime()-start.getTime())/1000/60);
+    public static int minustsBetween(Date start, Date end) {
+        return (int) ((end.getTime() - start.getTime()) / 1000 / 60);
     }
 
     /**
      * 将传入的时间字符串装换成另外的格式
      *
-     * @param dateStr 待转换的时间字符串
+     * @param dateStr       待转换的时间字符串
      * @param dateStrFormat 待转换的时间字符串 的格式
-     * @param formater 转换目标格式
+     * @param formater      转换目标格式
      * @return 转换后的时间格式字符串
      */
-    public static String formatDate(String dateStr, String dateStrFormat, String formater){
+    public static String formatDate(String dateStr, String dateStrFormat, String formater) {
         SimpleDateFormat format = new SimpleDateFormat(dateStrFormat);
         SimpleDateFormat format1 = new SimpleDateFormat(formater);
         Date date;
-        String date_Str = "";
+        String resultDataString = "";
         try {
             date = format.parse(dateStr);
-            date_Str = format1.format(date);
+            resultDataString = format1.format(date);
         } catch (ParseException e) {
             log.error(e.getMessage());
             return null;
         }
-        if(date_Str.equals("")){
+        if ("".equals(resultDataString)) {
             return dateStr;
-        }else{
-            return date_Str;
+        } else {
+            return resultDataString;
         }
     }
 
     /**
      * 获取传入月开始6个月的String月份列表
+     *
      * @return List<String> 包含传入月6个月的月份日期 yyyyMM String列表
      */
-    public static List<String> getSixMonth(String beginDate){
+    public static List<String> getSixMonth(String beginDate) {
         List<String> result = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat(STANDARD_DATE_MONTH);
         Date date;
@@ -621,8 +649,8 @@ public class DateFormateUtils {
             result.add(beginDate);
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
-            for(int i=0;i<5;i++){
-                cal.add(Calendar.MONTH,1);
+            for (int i = 0; i < SIZE; i++) {
+                cal.add(Calendar.MONTH, 1);
                 result.add(format.format(cal.getTime()));
             }
         } catch (ParseException e) {
@@ -634,6 +662,7 @@ public class DateFormateUtils {
 
     /**
      * 获取传入月开始6个月的String月份列表
+     *
      * @return List<String> 包含传入月6个月的月份日期 yyyy年MM月 String列表
      */
     public static String getSixMonthFormat(String beginDate) {
@@ -646,8 +675,8 @@ public class DateFormateUtils {
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
             result.add(format1.format(cal.getTime()));
-            for(int i=0;i<5;i++){
-                cal.add(Calendar.MONTH,1);
+            for (int i = 0; i < SIZE; i++) {
+                cal.add(Calendar.MONTH, 1);
                 result.add(format1.format(cal.getTime()));
             }
         } catch (ParseException e) {
@@ -660,6 +689,7 @@ public class DateFormateUtils {
 
     /**
      * 获取指定日期所在月份开始的时间 格式yyyyMMddHHmmssSSS精确到毫秒
+     *
      * @return Date
      */
     public static Date getMonthBegin(Date date) {
@@ -673,7 +703,7 @@ public class DateFormateUtils {
             //将分钟至0
             c.set(Calendar.MINUTE, 0);
             //将秒至0
-            c.set(Calendar.SECOND,0);
+            c.set(Calendar.SECOND, 0);
             //将毫秒至0
             c.set(Calendar.MILLISECOND, 0);
 
@@ -685,10 +715,11 @@ public class DateFormateUtils {
 
     /**
      * 判断日期字符串是否合法(yyyy年-MM月-dd日)
+     *
      * @param strDate
      * @return
      */
-    public static boolean isValidDate(String strDate,String formatStr) {
+    public static boolean isValidDate(String strDate, String formatStr) {
         //判断传入的yyyy年-MM月-dd日 字符串是否为数字
         String[] sArray = strDate.split("-");
         for (String s : sArray) {
@@ -705,7 +736,6 @@ public class DateFormateUtils {
             format.setLenient(false);
             format.parse(strDate);
         } catch (Exception e) {
-            // e.printStackTrace();
             // 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
             return false;
         }
@@ -754,7 +784,6 @@ public class DateFormateUtils {
             return null;
         }
     }
-
 
 
 }

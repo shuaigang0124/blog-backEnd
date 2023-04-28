@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 操作Redis服务器中的数据工具类
+ * @author shuaigang
+ * @date  2023/4/28 19:47
  */
 @Component
 public class RedisUtils {
@@ -104,7 +106,7 @@ public class RedisUtils {
         ops.set(key,value);
     }
 
-    //修改list中对应下标的参数
+    /** 修改list中对应下标的参数 */
     public void lset(String key,Integer index,Serializable  value){
         ListOperations<String, Serializable> ops = redisTemplate.opsForList();
         ops.set(key,index,value);

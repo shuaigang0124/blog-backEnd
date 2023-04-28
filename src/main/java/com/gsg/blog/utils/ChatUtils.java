@@ -1,9 +1,8 @@
 package com.gsg.blog.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gsg.blog.config.RabbitMQConfig;
+import com.gsg.blog.config.RabbitMqConfig;
 import com.gsg.blog.dto.ChatRequestDTO;
-import com.gsg.blog.model.ChatMsg;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.vo.ChatListVO;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +44,7 @@ public class ChatUtils {
         }
 
         assert chatRequestJsonStr != null;
-        RabbitMQConfig.rabbitMqChatClient.publish(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
+        RabbitMqConfig.rabbitMqChatClient.publish(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
     }
 
     /**
@@ -54,7 +53,7 @@ public class ChatUtils {
      * @date  2022/8/31 13:34
      */
     public List<Object> getMsg(String queueName) {
-        return RabbitMQConfig.rabbitMqChatClient.getMsg(queuePrefix + queueName + queueSuffix);
+        return RabbitMqConfig.rabbitMqChatClient.getMsg(queuePrefix + queueName + queueSuffix);
     }
 
 }

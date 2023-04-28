@@ -31,7 +31,6 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @TableName("user")
 @Accessors(chain = true)
-//@NoArgsConstructor
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

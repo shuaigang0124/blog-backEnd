@@ -10,10 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+/**
+ * @author shuaigang
+ * @date  2023/4/28 19:35
+ */
 @Slf4j
 public class ParseJsonUtil {
 
-    // 定义jackson对象
+    /** 定义jackson对象 */
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static final SerializeConfig CONFIG;
@@ -26,7 +30,7 @@ public class ParseJsonUtil {
         CONFIG.put(java.sql.Date.class, new JSONLibDataFormatSerializer());
     }
 
-    // 输出空置字段
+    /** 输出空置字段 */
     private static final SerializerFeature[] FEATURES = {SerializerFeature.WriteMapNullValue,
             // list字段如果为null，输出为[]，而不是null
             SerializerFeature.WriteNullListAsEmpty,
@@ -39,7 +43,7 @@ public class ParseJsonUtil {
     };
 
 
-    // 转换为数组
+    /** 转换为数组 */
     public static <T> Object[] toArray(String text, Class<T> clazz) {
         return JSON.parseArray(text, clazz).toArray();
     }

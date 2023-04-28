@@ -4,6 +4,7 @@ import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.model.JwtUserDetails;
 import com.gsg.blog.model.User;
 import com.gsg.blog.service.IUserService;
+import com.gsg.blog.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,7 +42,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         User userDetail;
 
         /* 1、用户ID校验登录 (暂不做登录使用)*/
-        if (username.startsWith("GSG")) {
+        if (username.startsWith(Constants.GSG)) {
             userDetail = userService.findUserById(username);
             if (userDetail == null) {
                 throw ServiceException.errorParams("未填写有效用户名！");

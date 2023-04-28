@@ -8,8 +8,6 @@ import com.gsg.blog.service.IUserService;
 import com.gsg.blog.utils.*;
 import com.gsg.blog.vo.UserDetailsVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,16 +32,12 @@ public class UserController {
         if (Constants.NOT_UNIQUE.equals(userService.checkUserNameUnique(userDTO))) {
             return Result.ok(BaseUtil.encode(R.failed(new ServiceException("注册用户'" + userDTO.getUserName() + "'失败，用户名已存在！"))));
         }
-//            if (!StringUtils.isEmpty(userDTO.getPhone())
-//                    && Constants.NOT_UNIQUE.equals(userService.checkPhoneUnique(userDTO))) {
-//                return R.failed(new ServiceException("注册用户'" + userDTO.getUserName() + "'失败，手机号码已存在！"));
-//            }
         if (ObjectUtil.isNotEmpty(userDTO.getEmail())
                 && Constants.NOT_UNIQUE.equals(userService.checkEmailUnique(userDTO))) {
             return Result.ok(BaseUtil.encode(R.failed(new ServiceException("注册用户'" + userDTO.getUserName() + "'失败，邮箱账号已存在！"))));
         }
 
-        String userId = "GSG" + PKGenerator.generate();
+        String userId = "GSG" + PkGenerator.generate();
         userDTO.setId(userId)
                 // 对用户密码加密
                 .setPassword(PasswordUtils.encode(userDTO.getPassword()));

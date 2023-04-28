@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.utils.BaseUtil;
+import com.gsg.blog.utils.Constants;
 import com.gsg.blog.utils.JacksonUtils;
 import com.gsg.blog.utils.ParseJsonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class AvalidatorFilter extends OncePerRequestFilter {
         log.info("AvalidatorFilter过滤器1登录执行开始");
 
         String contentType = request.getContentType();
-        if (contentType != null && contentType.contains("multipart/form-data")){
+        if (contentType != null && contentType.contains(Constants.CONTENT_TYPE)){
             String serverName = request.getHeader("serverName");
             if (ObjectUtils.isEmpty(serverName)) {
                 serverName = request.getServerName() + ":" + request.getServerPort();
@@ -88,9 +89,6 @@ public class AvalidatorFilter extends OncePerRequestFilter {
             }
             dataJson = JSON.parseObject(replace);
             log.debug("解析后的body: {}", dataJson);
-//
-//            String customData = dataJson.getString(DATA);
-//            JSONObject jsonObject = JSON.parseObject(customData);
 
             MyHttpServletRequestWrapper myHttpServletRequestWrapper = new MyHttpServletRequestWrapper(request, replace.getBytes());
             Map paramMap = ParseJsonUtil.stringToCollect(dataDecode);

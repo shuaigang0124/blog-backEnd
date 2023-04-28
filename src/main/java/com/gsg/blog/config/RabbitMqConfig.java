@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "rabbitmq")
 @Configuration
-public class RabbitMQConfig {
+public class RabbitMqConfig {
 
     /** RabbitMQ的连接地址 */
     private String url;
@@ -49,28 +49,28 @@ public class RabbitMQConfig {
 
     public static RabbitMqChatClient rabbitMqChatClient;
     public void setRabbitMqChatClient(RabbitMqChatClient rabbitMqChatClient) {
-        RabbitMQConfig.rabbitMqChatClient = rabbitMqChatClient;
+        RabbitMqConfig.rabbitMqChatClient = rabbitMqChatClient;
     }
 
     /** 自定义exchange */
     public static String chatExchangeName;
     @Value("${rabbitmq.chatExchangeName}")
     public void setChatExchangeName(String chatExchangeName) {
-        RabbitMQConfig.chatExchangeName = chatExchangeName;
+        RabbitMqConfig.chatExchangeName = chatExchangeName;
     }
 
     /** 超时时间 ttl 毫秒 */
     public static String ttl;
     @Value("${rabbitmq.ttl}")
     public void setTtl(String ttl) {
-        RabbitMQConfig.ttl = ttl;
+        RabbitMqConfig.ttl = ttl;
     }
 
     /** 某些自动回复控制一定时间内部进行重复提醒，单位秒 */
     public static Long autoReplyTimeLimit;
     @Value("${chat.autoReplyTimeLimit}")
     public void setAutoReplyTimeLimit(Long autoReplyTimeLimit) {
-        RabbitMQConfig.autoReplyTimeLimit = autoReplyTimeLimit;
+        RabbitMqConfig.autoReplyTimeLimit = autoReplyTimeLimit;
     }
 
 }

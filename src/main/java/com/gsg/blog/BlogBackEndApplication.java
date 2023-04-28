@@ -7,6 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+/**
+ * @author shuaigang
+ * @date  2023/4/28 19:34
+ */
 @SpringBootApplication
 @ComponentScan("com.gsg")
 @MapperScan("com.gsg.blog.mapper")

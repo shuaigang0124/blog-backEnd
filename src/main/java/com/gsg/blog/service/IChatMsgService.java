@@ -17,13 +17,30 @@ import java.util.List;
  */
 public interface IChatMsgService extends IService<ChatMsg> {
 
+    /**
+     * 发送聊天信息
+     * @param chatMsgDTO dto
+     */
     void sendMsgToUser(ChatMsgDTO chatMsgDTO);
 
+    /**
+     * 获取mq聊天信息
+     * @param queueName 队列名
+     * @return  list
+     */
     List<Object> getMsg(String queueName);
 
+    /**
+     * 保存聊天信息
+     * @param chatMsg 聊天信息
+     */
     void saveMsg(ChatMsg chatMsg);
 
-
+    /**
+     * 从数据库获取聊天信息
+     * @param chatMsgDTO 聊天信息
+     * @return  list
+     */
     List<ChatListVO> getChatList(ChatMsgDTO chatMsgDTO);
 
 }

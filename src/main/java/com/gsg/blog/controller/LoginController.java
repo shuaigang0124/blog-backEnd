@@ -2,6 +2,7 @@ package com.gsg.blog.controller;
 
 import com.gsg.blog.config.JwtProperties;
 import com.gsg.blog.dto.RequestDTO;
+import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.model.JwtUserDetails;
 import com.gsg.blog.service.impl.UserDetailServiceImpl;
 import com.gsg.blog.utils.*;
@@ -48,16 +49,13 @@ public class LoginController {
      */
     @PostMapping("/generateToken")
     public Result<?> generateToken(@RequestBody @Valid RequestDTO requestDTO, BindingResult bindingResult) {
-        if (ValidErrorUtil.hasError(bindingResult) != null) {
-            return ValidErrorUtil.hasError(bindingResult);
+        if (requestDTO.getUserId() == null) {
+            throw ServiceException.errorParams("userId is not null !");
         }
         String userId = requestDTO.getUserId();
         JwtUserDetails userDetails = userDetailService.loadUserByUsername(userId);
         redisUtils.set(userId, "");
         String newToken = jwtTokenUtil.generateToken(userId);
-
-        /* 登录token存入redis , 管理其失效时间*/
-//        redisUtils.setWithTimeoutSeconds(newToken, "", jwtProperties.getTokenValidityInSeconds());
 
         Map<String, Object> map = new HashMap<>(5);
 

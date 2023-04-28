@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
+/**
+ * @author shuaigang
+ * @date  2023/4/28 19:35
+ */
 @Data
 @Component
 @Accessors(chain = true)

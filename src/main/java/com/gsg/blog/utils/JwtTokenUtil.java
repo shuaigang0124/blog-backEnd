@@ -25,7 +25,7 @@ import java.util.Map;
 @Data
 @Slf4j
 public class JwtTokenUtil {
-    // 注入自己的jwt配置
+    /** 注入自己的jwt配置 */
     @Resource
     private JwtProperties jwtProperties;
 
@@ -38,7 +38,7 @@ public class JwtTokenUtil {
     private static final String AUDIENCE_MOBILE = "mobile";
     private static final String AUDIENCE_TABLET = "tablet";
 
-    // 解析token返回map
+    /** 解析token返回map */
     private Claims getClaimsFromToken(String token) {
         Claims claims;
         try {
@@ -66,8 +66,8 @@ public class JwtTokenUtil {
 
     }
 
-    // 获取token创建时间
-    /*public Date getCreatedDateFromToken(String token) {
+    /** 获取token创建时间 */
+    public Date getCreatedDateFromToken(String token) {
         Date created;
         try {
             final Claims claims = getClaimsFromToken(token);
@@ -76,10 +76,10 @@ public class JwtTokenUtil {
             created = null;
         }
         return created;
-    }*/
+    }
 
 
-    // 获取token有效期
+    /** 获取token有效期 */
     public Date getExpirationDateFromToken(String token) {
         Date expiration;
         try {
@@ -92,8 +92,8 @@ public class JwtTokenUtil {
         return expiration;
     }
 
-    // 获取jwt接收者
-    /*public String getAudienceFromToken(String token) {
+    /** 获取jwt接收者 */
+    public String getAudienceFromToken(String token) {
         String audience;
         try {
             final Claims claims = getClaimsFromToken(token);
@@ -102,14 +102,14 @@ public class JwtTokenUtil {
             audience = null;
         }
         return audience;
-    }*/
+    }
 
-    // 设置过期时间
+    /** 设置过期时间 */
     private Date genterateExpirationDate() {
         return new Date(System.currentTimeMillis() + jwtProperties.getTokenValidityInSeconds() * 1000);
     }
 
-    // 判断是否过期
+    /** 判断是否过期 */
     public Boolean isTokenExpired(String token) {
         Date expiration = getExpirationDateFromToken(token);
         // 转换为指定日期  yyyy年MM月dd日 HH:mm:ss
@@ -118,27 +118,27 @@ public class JwtTokenUtil {
         return expiration.before(new Date());
     }
 
-    // 生成时间是否在最后修改时间之前
-    /*private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
+    /** 生成时间是否在最后修改时间之前 */
+    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
-    }*/
+    }
 
-    // 忽略token有效期
-    /*private Boolean ignoreTokenExpiration(String token) {
+    /** 忽略token有效期 */
+    private Boolean ignoreTokenExpiration(String token) {
         String audience = getAudienceFromToken(token);
         return (AUDIENCE_TABLET.equals(audience) || AUDIENCE_MOBILE.equals(audience));
-    }*/
+    }
 
 
-    // 生成token
+    /** 生成token */
     public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>(2);
         claims.put(CLAIM_KEY_USERNAME, username);
         claims.put(CLAIM_KEY_CREATED, new Date());
         return generateToken(claims);
     }
 
-    //生成token（最关键）
+    /** 生成token（最关键） */
     String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getBase64Secret())
@@ -147,15 +147,15 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    /*public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
+    public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
         // 得到token生成时间
         final Date created = getCreatedDateFromToken(token);
         // 判断生成时间不在修改时间之前、token未过期并且未忽略token有效期
         return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
                 && (!isTokenExpired(token) || ignoreTokenExpiration(token));
-    }*/
+    }
 
-    // 刷新token过期时间
+    /** 刷新token过期时间 */
     public String refreshToken(String token) {
         String refreshedToken;
         try {
@@ -168,7 +168,7 @@ public class JwtTokenUtil {
         return refreshedToken;
     }
 
-    // 验证token是否有效
+    /** 验证token是否有效 */
     public Boolean validateToken(String token, UserDetails userDetails) {
         JwtUserDetails user = (JwtUserDetails) userDetails;
         String userId = getUsernameFromToken(token);

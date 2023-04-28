@@ -2,7 +2,7 @@ package com.gsg.blog.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
  * @date  2021/12/10 9:22
  */
 @Slf4j
-public class WebPUtils {
+public class WebpUtils {
 
 
 //    public static void main(String args[]){
@@ -42,9 +42,7 @@ public class WebPUtils {
     public static String convertToWebp(String srcFile) {
 
         int beginIndex = srcFile.lastIndexOf(".");
-        String imgFilePrefix = srcFile.substring(0, beginIndex);
-        String imgWebPFile = imgFilePrefix + ".webp";
-        return imgWebPFile;
+        return srcFile.substring(0, beginIndex) + ".webp";
 
     }
 
@@ -52,15 +50,15 @@ public class WebPUtils {
     public static String changePathToWebp(String supportWebp, String imgPath) {
         log.debug("图片格式转换标志位【{}】", supportWebp);
         if(!StringUtils.isEmpty(supportWebp)
-                && supportWebp.trim().equals("1")){
+                && "1".equals(supportWebp.trim())){
             log.debug("图片格式转换：原文件【{}】", imgPath);
-            if(imgPath.endsWith(".png")
-                    || imgPath.endsWith(".jpg")
-                    || imgPath.endsWith(".jpeg")
-                    || imgPath.endsWith(".gif")
-                    || imgPath.endsWith(".bmp")
-                    || imgPath.endsWith(".webp")) {
-                imgPath = WebPUtils.convertToWebp(imgPath);
+            if(imgPath.endsWith(Constants.PNG)
+                    || imgPath.endsWith(Constants.JPG)
+                    || imgPath.endsWith(Constants.JPEG)
+                    || imgPath.endsWith(Constants.GIF)
+                    || imgPath.endsWith(Constants.BMP)
+                    || imgPath.endsWith(Constants.WEBP)) {
+                imgPath = WebpUtils.convertToWebp(imgPath);
             }
         }
         log.debug("图片格式转换：转换后【{}】", imgPath);

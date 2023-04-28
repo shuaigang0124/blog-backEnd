@@ -37,24 +37,17 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
         // 使用userid生成token
         String userId = userDetails.getUserId();
-//        String realToken = jwtTokenUtil.generateToken(authentication.getName());
         String realToken = jwtTokenUtil.generateToken(userId);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(3);
         // base64 加密用户Id，用户角色
         String base64UserId = Base64.getEncoder().encodeToString(userId.getBytes());
         String base64Role = Base64.getEncoder().encodeToString(userDetails.getRole().getBytes());
-
-        //Base64 解密方法
-//        String userId = new String(Base64.getDecoder().decode(base64UserId));
 
         map.put("Authorization", realToken);
         map.put("userId", base64UserId);
         map.put("role", base64Role);
 
-//        /* token交由redis管理时效*/
-//        redisUtils.setWithTimeoutSeconds(realToken, "", jwtProperties.getTokenValidityInSeconds());
-
-        /**
+        /*
          * Token副本校验
          * 在redis中存储token副本，用户请求时候校验，如果redis中不存在该副本则不给通过。
          */

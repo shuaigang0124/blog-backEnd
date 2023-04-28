@@ -9,7 +9,7 @@ import com.gsg.blog.service.IChatMsgService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gsg.blog.service.IUserService;
 import com.gsg.blog.utils.ChatUtils;
-import com.gsg.blog.utils.PKGenerator;
+import com.gsg.blog.utils.PkGenerator;
 import com.gsg.blog.vo.ChatListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -69,7 +68,7 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
 
     @Override
     public void saveMsg(ChatMsg chatMsg) {
-        String chatMsgId = "ChatMsg_" + PKGenerator.generate();
+        String chatMsgId = "ChatMsg_" + PkGenerator.generate();
         chatMsg.setId(chatMsgId);
         int insertRow = chatMsgMapper.insert(chatMsg);
         if (insertRow != 1) {

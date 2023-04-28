@@ -3,9 +3,10 @@ package com.gsg.blog.filter;
 import com.gsg.blog.config.JwtProperties;
 import com.gsg.blog.model.JwtUserDetails;
 import com.gsg.blog.service.impl.UserDetailServiceImpl;
+import com.gsg.blog.utils.Constants;
 import com.gsg.blog.utils.JwtTokenUtil;
 import com.gsg.blog.utils.RedisUtils;
-import com.gsg.blog.utils.WebPUtils;
+import com.gsg.blog.utils.WebpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,7 +52,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String authToken = request.getHeader(jwtProperties.getHeader());
         String userId = jwtTokenUtil.getUsernameFromToken(authToken);
         boolean flag = false;
-        if (!org.apache.commons.lang3.StringUtils.isEmpty(authToken) && !"".equals(authToken)) {
+        if (!StringUtils.isEmpty(authToken) && !"".equals(authToken)) {
             // token刷新时间
             flag = true;
             if (!jwtTokenUtil.isTokenExpired(authToken)) {
@@ -65,20 +66,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 flag = false;
             }
 
-            /* token交由redis管理时效*/
-//            flag = true;
-//            Boolean tokenExistFlag = redisUtils.isExist(authToken);
-//            if(tokenExistFlag){
-//                redisUtils.setExpire(authToken, jwtProperties.getTokenValidityInSeconds(), TimeUnit.SECONDS);
-//                log.info("[{}] Token时间已刷新!【{}--{}】", DateFormateUtils.getUtcCurrentDate(),authToken, redisUtils.getExpire(authToken));
-//            }
-//            if (userId == null || !tokenExistFlag) {
-//                response.setHeader(IS_EXPIRED, FLAG);
-//                log.info("Token已失效");
-//                redisUtils.delete(userId);
-//                flag = false;
-//            }
-
         }
 
         log.debug("进入自定义过滤器：");
@@ -87,18 +74,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         // 当token中的username不为空时进行验证token是否是有效的token
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null && flag) {
 
-
-            /*
-             * Token副本校验
-             * 在redis中存储token副本，用户请求时候校验，如果redis中不存在该副本则不给通过。
-             */
-//            String accessSysCode = request.getHeader("accessSysCode");
-//            if(StringUtils.isEmpty(accessSysCode)){
-//                accessSysCode = (String)JSON.parseObject(request.getParameter(META_DATA)).get("accessSysCode");
-//            }
-
-            // token中username不为空，进行token验证
-            // 从数据库得到带有密码的完整user信息
+            // token中username不为空，进行token验证，从数据库得到带有密码的完整user信息
             JwtUserDetails userDetails = this.userDetailsService.loadUserByUsername(userId);
 
             if (jwtTokenUtil.validateToken(authToken, userDetails)
@@ -128,19 +104,36 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String method = request.getMethod();
         log.info("请求URL:【{}】Method:【{}】", requestUrl, method);
 
+        checkImage(method, requestUrl, request, response);
+
+        log.info("过滤器2执行结束!");
+        chain.doFilter(request, response);
+
+    }
+
+    /**
+     * 检验是否为访问图片资源
+     * @param method method
+     * @param requestUrl requestUrl
+     * @param request request
+     * @param response response
+     * @throws ServletException ServletException
+     * @throws IOException IOException
+     */
+    void checkImage(String method, String requestUrl, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         /*requestURI = /gsg/static-resource/formal/2/20211014/123456.png*/
-        if ("GET".equals(method)
+        if (Constants.GET.equals(method)
                 // 本地
                 /* requestURI.startsWith("/D:/static-resource/formal") */
                 // 开发
                 && requestUrl.startsWith("/gsg/static-resource/formal")
-                && (requestUrl.endsWith(".png")
-                || requestUrl.endsWith(".jpg")
-                || requestUrl.endsWith(".jpeg")
-                || requestUrl.endsWith(".gif")
-                || requestUrl.endsWith(".bmp")
-                || requestUrl.endsWith(".webp"))) {
+                && (requestUrl.endsWith(Constants.PNG)
+                || requestUrl.endsWith(Constants.JPG)
+                || requestUrl.endsWith(Constants.JPEG)
+                || requestUrl.endsWith(Constants.GIF)
+                || requestUrl.endsWith(Constants.BMP)
+                || requestUrl.endsWith(Constants.WEBP))) {
             /* 20211210 如果请求GET 方式获取图片资源文件时，将图片转换成webp格式，进行返回*/
             int beginIndex = requestUrl.lastIndexOf("/");
             /*/gsg/static-resource/formal/2/20211014*/
@@ -157,7 +150,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             if (!webpFile.exists()) {
                 log.info("调用方法生成WebP副本");
                 Float webpScale = 1.0f;
-                if (requestUrl.contains(".webp")) {
+                if (requestUrl.contains(Constants.WEBP)) {
                     String imgPngFilePath = imgFilePrefix + ".png";
                     String imgGifFilePath = imgFilePrefix + ".gif";
                     String imgJpgFilePath = imgFilePrefix + ".jpg";
@@ -165,46 +158,38 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     String imgJpegFilePath = imgFilePrefix + ".jpeg";
                     File imgPngFile = new File(imgPngFilePath);
                     if (imgPngFile.exists()) {
-                        WebPUtils.encodingToWebp(imgPngFilePath, imgWebpFile, webpScale);
+                        WebpUtils.encodingToWebp(imgPngFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgGifFile = new File(imgGifFilePath);
                     if (imgGifFile.exists()) {
-                        WebPUtils.encodingToWebp(imgGifFilePath, imgWebpFile, webpScale);
+                        WebpUtils.encodingToWebp(imgGifFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgJpgFile = new File(imgJpgFilePath);
                     if (imgJpgFile.exists()) {
-                        WebPUtils.encodingToWebp(imgJpgFilePath, imgWebpFile, webpScale);
+                        WebpUtils.encodingToWebp(imgJpgFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgBmpFile = new File(imgBmpFilePath);
                     if (imgBmpFile.exists()) {
-                        WebPUtils.encodingToWebp(imgBmpFilePath, imgWebpFile, webpScale);
+                        WebpUtils.encodingToWebp(imgBmpFilePath, imgWebpFile, webpScale);
                     }
 
                     File imgJpegFile = new File(imgJpegFilePath);
                     if (imgJpegFile.exists()) {
-                        WebPUtils.encodingToWebp(imgJpegFilePath, imgWebpFile, webpScale);
+                        WebpUtils.encodingToWebp(imgJpegFilePath, imgWebpFile, webpScale);
                     }
                 } else {
-                    WebPUtils.encodingToWebp(requestUrl, imgWebpFile, webpScale);
+                    WebpUtils.encodingToWebp(requestUrl, imgWebpFile, webpScale);
                 }
             }
 
-            if (!requestUrl.contains(".webp")) {
+            if (!requestUrl.contains(Constants.WEBP)) {
                 /* 20211124 前端增加header参数，判断是否支持WebP格式图片访问*/
                 String supportWebp = request.getHeader("supportWebp");
-                // String serverName = request.getHeader("serverName");
                 if (!StringUtils.isEmpty(supportWebp)
                         && "1".equals(supportWebp.trim())) {
-//
-//                    if (ObjectUtils.isEmpty(serverName)) {
-//                        serverName = request.getServerName() + ":" + request.getServerPort();
-//                    }
-//                    if(!ObjectUtils.isEmpty(request.getScheme())){
-//                        serverName = request.getScheme() + "://" + serverName;
-//                    }
                     log.info("请求转发图片副本：【{}】", imgWebpFile);
                     request.getRequestDispatcher(imgWebpFile).forward(request, response);
                 }
@@ -212,9 +197,5 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
 
         }
-
-        log.info("过滤器2执行结束!");
-        chain.doFilter(request, response);
-
     }
 }
