@@ -86,7 +86,7 @@ public class RabbitMqChatClient {
              * 1、队列名称 2、是否持久化 3、是否独占此队列 4、队列不用是否自动删除 5、参数（设置队列的TTL）
              */
             HashMap<String, Object> paramMap = new HashMap<>(2);
-            paramMap.put("x-message-ttl", Long.parseLong(msgTtl));
+//            paramMap.put("x-message-ttl", Long.parseLong(msgTtl));
             paramMap.put("x-expires", Long.parseLong(msgTtl));
             channel.queueDeclare(queueName, true, false, false, paramMap);
 
