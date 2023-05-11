@@ -78,7 +78,7 @@ public class AvalidatorFilter extends OncePerRequestFilter {
         /* 解码*/
         String dataDecode = BaseUtil.decode(data);
         if (StringUtils.isEmpty(dataDecode)) {
-            throw ServiceException.errorParams("参数请求异常！");
+            throw ServiceException.errorParams();
         }
 
         try {

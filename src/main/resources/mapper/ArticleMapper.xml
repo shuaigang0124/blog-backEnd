@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gsg.blog.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="com.gsg.blog.vo.ArticleVo">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="avatar" property="avatar" />
+        <result column="title" property="title" />
+        <result column="description" property="description" />
+        <result column="content" property="content" />
+        <result column="img" property="img" />
+        <result column="click_num" property="clickNum" />
+        <result column="read_num" property="readNum" />
+        <result column="is_originality" property="isOriginality" />
+        <result column="old_user_name" property="oldUserName" />
+        <result column="old_time" property="oldTime" />
+        <result column="statement" property="statement" />
+        <result column="old_link" property="oldLink" />
+        <result column="is_notice" property="isNotice" />
+        <result column="deleted" property="deleted" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+        <collection property="id" column="id" javaType="java.util.List" select="getTags" />
+    </resultMap>
+
+    <select id="getListArticle" resultType="com.gsg.blog.vo.ArticleVo"
+            parameterType="com.gsg.blog.model.Article">
+        select a.id,
+               a.user_id,
+               u.user_name,
+               u.avatar,
+               a.title,
+               a.description,
+--                a.content,
+--                a.img,
+               a.click_num,
+               a.read_num,
+               a.is_originality,
+               a.is_notice,
+               a.gmt_create,
+               a.gmt_modified
+        from article a
+        inner join user u on u.id = a.user_id
+        <where>
+            <if test="userId != null and userId != ''">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+        order by a.is_notice desc, a.gmt_create desc
+        <if test="pageNum != null and pageSize != null">
+            <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
+            limit #{key_offset}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="getListArticleTotal" parameterType="com.gsg.blog.model.Article" resultType="java.lang.Integer">
+        select count(1)
+        from article a
+        inner join user u on u.id = a.user_id
+        <where>
+            <if test="userId != null and userId != ''">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getTags" resultType="com.gsg.blog.vo.TagVo">
+        select t.type,
+               t.name
+        from article_tag at
+        inner join article a on a.id = at.article_id
+        inner join tag t on t.id = at.tag_id
+        where at.article_id = #{articleId}
+    </select>
+
+</mapper>

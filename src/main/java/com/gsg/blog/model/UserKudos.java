@@ -9,53 +9,34 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * <p>
- * 留言弹幕表
+ * 用户-点赞记录表(目前数据量较少，同时存储博客与评论的点赞记录)
  * </p>
  *
  * @author shuaigang
- * @since 2023-04-27
+ * @since 2023-05-09
  */
 @Data
-@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@TableName("message")
+@TableName("user_kudos")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Message implements Serializable {
+public class UserKudos implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 留言表主键
+     * 用户表主键
      */
-    @TableId("id")
-    private String id;
-
-    /**
-     * 发送者
-     */
-    @NotNull(message = "userId is not null")
-    @TableField("user_id")
+    @TableId("user_id")
     private String userId;
 
     /**
-     * 颜色
+     * 发布业务主键
      */
-    @NotNull(message = "userId is not null")
-    @TableField("color")
-    private String color;
-
-    /**
-     * 消息
-     */
-    @NotNull(message = "userId is not null")
-    @TableField("content")
-    private String content;
+    @TableField("service_id")
+    private String serviceId;
 
     /**
      * 创建时间
@@ -68,12 +49,6 @@ public class Message implements Serializable {
      */
     @TableField("gmt_modified")
     private Date gmtModified;
-
-    /**
-     * 逻辑删除,0-未删除,1-已删除,默认值0
-     */
-    @TableField("deleted")
-    private Integer deleted;
 
 
 }

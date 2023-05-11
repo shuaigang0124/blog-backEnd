@@ -50,7 +50,7 @@ public class LoginController {
     @PostMapping("/generateToken")
     public Result<?> generateToken(@RequestBody @Valid RequestDTO requestDTO, BindingResult bindingResult) {
         if (requestDTO.getUserId() == null) {
-            throw ServiceException.errorParams("userId is not null !");
+            throw ServiceException.errorParams();
         }
         String userId = requestDTO.getUserId();
         JwtUserDetails userDetails = userDetailService.loadUserByUsername(userId);

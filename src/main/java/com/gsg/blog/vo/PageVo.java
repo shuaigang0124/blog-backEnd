@@ -1,5 +1,6 @@
 package com.gsg.blog.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

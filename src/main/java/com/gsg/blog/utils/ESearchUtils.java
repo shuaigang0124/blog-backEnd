@@ -6,7 +6,6 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldSort;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch._types.mapping.FieldType;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.ExistsRequest;
 import co.elastic.clients.elasticsearch.core.*;
@@ -21,7 +20,6 @@ import co.elastic.clients.json.JsonData;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import co.elastic.clients.util.ObjectBuilder;
 import com.alibaba.fastjson.JSON;
 import com.gsg.blog.dto.EsPage;
 import com.gsg.blog.vo.PageResponseVO;
@@ -40,7 +38,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -1057,7 +1054,7 @@ public class ESearchUtils {
             // ------ 时间转换 ------
             // 获取创建时间
             ArrayList<Integer> list = (ArrayList<Integer>) entry.get("gmtCreate");
-            if (org.springframework.util.StringUtils.isEmpty(list)) {
+            if (ObjectUtils.isEmpty(list)) {
                 return entry;
             }
 

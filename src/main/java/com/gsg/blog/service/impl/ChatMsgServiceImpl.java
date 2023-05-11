@@ -91,7 +91,7 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
         Integer pageNum = chatMsgDTO.getPageNum();
         Integer pageSize = chatMsgDTO.getPageSize();
         if (StringUtils.isEmpty(roomId) || pageNum == null || pageSize == null) {
-            throw ServiceException.errorParams("传入参数有误！");
+            throw ServiceException.errorParams();
         }
         return chatMsgMapper.getChatList(chatMsgDTO);
     }

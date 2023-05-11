@@ -20,7 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class ChatMsgDTO extends Page implements Serializable {
+public class ChatMsgDTO extends CommonDto implements Serializable {
     private static final long serialVersionUID = -6455492020284634783L;
 
 

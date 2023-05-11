@@ -7,6 +7,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -23,6 +25,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 @TableName("chat_msg")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatMsg implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -1,6 +1,7 @@
 package com.gsg.blog.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatListVO implements Serializable {
     private static final long serialVersionUID = -129321366418548L;
 

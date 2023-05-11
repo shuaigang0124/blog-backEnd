@@ -20,7 +20,7 @@ public class ChatRequestDTO implements Serializable {
 
     private static final long serialVersionUID = -4220055767381301366L;
 
-    private String version =  "V1";
+    private String version =  "V1.0.0";
 
 //    private String encryptionType = "base64";
 

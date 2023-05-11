@@ -17,7 +17,7 @@ import java.io.Serializable;
 @ConfigurationProperties(prefix = "result")
 public class Result<T> implements Serializable {
 
-    private String version =  "V1";
+    private String version =  "V1.0.0";
 
 //    private String encryptionType = "base64";
 

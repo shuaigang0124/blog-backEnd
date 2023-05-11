@@ -64,13 +64,21 @@ public class WebSecurityConfig {
             "/gsg/msg/getMsg",
 //            "/gsg/msg/insertMsg",
 
-//            "/gsg/atc/insertArticle",
-            "/gsg/atc/getArticle",
-
             "/gsg/user/getUserDetails",
 //            "/gsg/chat/sendMsg",
 //            "/gsg/chat/getMsg",
             "/gsg/chat/getChatList",
+
+            "/gsg/articleComment/insert",
+            "/gsg/articleComment/update",
+            "/gsg/articleComment/getList",
+            "/gsg/articleComment/delete",
+
+            "/gsg/article/insert",
+            "/gsg/article/update",
+            "/gsg/article/getById",
+            "/gsg/article/getList",
+            "/gsg/article/delete",
 
             "/gsg/test"
     };

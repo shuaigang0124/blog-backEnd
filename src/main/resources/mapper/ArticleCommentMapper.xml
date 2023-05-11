@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gsg.blog.mapper.ArticleCommentMapper">
+
+    <select id="getListArticleComment" resultType="com.gsg.blog.vo.ArticleCommentVo"
+            parameterType="com.gsg.blog.model.ArticleComment">
+        select ac.id,
+               ac.article_id,
+               ac.user_id,
+               u1.user_name,
+               u1.avatar,
+               ac.be_commented_user_id,
+               u2.user_name as userNameByReply,
+               ac.parent_id,
+               ac.level,
+               ac.content,
+               ac.click_num,
+               ac.gmt_create
+        from article_comment ac
+        inner join user u1 on u1.id = ac.user_id
+        left join user u2 on u2.id = ac.be_commented_user_id
+        where
+            ac.deleted = 0
+        <if test="level != null">
+            and ac.level = #{level}
+        </if>
+        <if test="parentId != null and parentId != ''">
+            and ac.parent_id = #{parentId}
+        </if>
+        <if test="articleId != null and articleId != ''">
+            and ac.article_id = #{articleId}
+        </if>
+        order by ac.gmt_create
+        <if test="pageNum != null and pageSize != null">
+            <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
+            limit #{key_offset}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="getListArticleCommentTotal" resultType="java.lang.Integer"
+            parameterType="com.gsg.blog.model.ArticleComment">
+        select count(1)
+        from article_comment ac
+        inner join user u1 on u1.id = ac.user_id
+        left join user u2 on u2.id = ac.be_commented_user_id
+        where
+        ac.deleted = 0
+        <if test="level != null">
+            and ac.level = #{level}
+        </if>
+        <if test="parentId != null and parentId != ''">
+            and ac.parent_id = #{parentId}
+        </if>
+        <if test="articleId != null and articleId != ''">
+            and ac.article_id = #{articleId}
+        </if>
+    </select>
+
+</mapper>

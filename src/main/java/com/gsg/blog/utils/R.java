@@ -48,6 +48,9 @@ public class R<T> implements Serializable {
     /** 4006 tokenIsExpired token已失效 */
     public static final int TOKEN_IS_EXPIRED = 4006;
 
+    /** 4007 自定义错误 */
+    public static final int ERROR = 4007;
+
     /** 4014 wrongPassword 密码错误。 */
     public static final int WRONG_PASSWORD = 4014;
 
@@ -95,7 +98,7 @@ public class R<T> implements Serializable {
      * @param data 数据
      */
     public static R<?> ok(Object data){
-        return new R<>().setMessage("OK").setCode(OK).setData(data);
+        return new R<>().setMessage("success").setCode(OK).setData(data);
     }
 
     /**

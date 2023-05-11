@@ -20,11 +20,11 @@ public abstract class BaseController {
      *
      * @author shuaigang
      **/
-    protected PageVo pageVo(Integer index, Integer size, Integer pageSize, Integer total, Object data) {
+    protected PageVo pageVo(Integer pageNum, Integer pageSize, Integer size, Integer total, Object data) {
         PageVo pageVo = new PageVo();
-        pageVo.setPageNum(index)
-                .setPageSize(pageSize)
-                .setPages(total == 0 ? 0 : total / size + (total % size == 0 ? 0 : 1))
+        pageVo.setPageNum(pageNum)
+                .setPageSize(size)
+                .setPages(total == 0 ? 0 : total / pageSize + (total % pageSize == 0 ? 0 : 1))
                 .setTotal(total)
                 .setList(data);
         return pageVo;

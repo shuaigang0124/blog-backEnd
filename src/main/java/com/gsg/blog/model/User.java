@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -31,6 +32,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @TableName("user")
 @Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -4,8 +4,9 @@ import com.gsg.blog.utils.R;
 
 /**
  * 业务处理异常基类
+ *
  * @author shuaigang
- * @date  2023/4/28 19:35
+ * @date 2023/4/28 19:35
  */
 public class ServiceException extends RuntimeException {
     private static final long serialVersionUID = -5027424785213629228L;
@@ -61,33 +62,58 @@ public class ServiceException extends RuntimeException {
         return code;
     }
 
-    /** 400 INVALID REQUEST
-     用户发出的请求有错误，服务器没有进行新建或修改数据的操作。*/
-    public static ServiceException invalidRequest(String message){
+    /**
+     * 400 INVALID REQUEST
+     * 用户发出的请求有错误，服务器没有进行新建或修改数据的操作。
+     */
+    public static ServiceException invalidRequest(String message) {
         return new ServiceException(message, R.INVALID_REQUEST);
     }
 
-    /** 4004 errorParams 参数错误*/
-    public static ServiceException errorParams(String message){
-        return new ServiceException(message,R.ERROR_PARAMS);
+    /**
+     * 4004 errorParams 参数错误
+     */
+    public static ServiceException errorParams() {
+        return new ServiceException("请求参数异常！", R.ERROR_PARAMS);
     }
 
-    /** 4005 listEmpty 未查询到结果信息 */
+    /**
+     * 4004 errorParams 参数错误
+     */
+    public static ServiceException errorParams(String message) {
+        return new ServiceException(message, R.ERROR_PARAMS);
+    }
+
+    /**
+     * 4004 errorParams 参数错误
+     */
+    public static ServiceException error(String message) {
+        return new ServiceException(message, R.ERROR);
+    }
+
+    /**
+     * 4005 listEmpty 未查询到结果信息
+     */
     public static ServiceException listEmpty(String message) {
         return new ServiceException(message, R.LIST_EMPTY);
     }
 
-    /** 404 NOT FOUND 用户发出的请求针对的是不存在的记录，服务器没有进行操作。  */
-    public static ServiceException notFound(String message){
+    /**
+     * 404 NOT FOUND 用户发出的请求针对的是不存在的记录，服务器没有进行操作。
+     */
+    public static ServiceException notFound(String message) {
         return new ServiceException(message, R.LIST_EMPTY);
     }
 
-    /** 5001 internalServerError 系统内部错误，（通用未定义的错误）
-     * 服务器忙的异常*/
-    public static ServiceException busy(){
+    /**
+     * 5001 internalServerError 系统内部错误，（通用未定义的错误）
+     * 服务器忙的异常
+     */
+    public static ServiceException busy() {
         return new ServiceException("数据库忙", R.INTERNAL_SERVER_ERROR);
     }
-    public static ServiceException busy(String message){
+
+    public static ServiceException busy(String message) {
         return new ServiceException(message, R.INTERNAL_SERVER_ERROR);
     }
 

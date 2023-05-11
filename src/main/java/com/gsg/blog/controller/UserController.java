@@ -21,7 +21,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/gsg/user")
-public class UserController {
+public class UserController extends BaseController {
 
     @Autowired
     IUserService userService;
@@ -34,7 +34,7 @@ public class UserController {
         }
         if (ObjectUtil.isNotEmpty(userDTO.getEmail())
                 && Constants.NOT_UNIQUE.equals(userService.checkEmailUnique(userDTO))) {
-            return Result.ok(BaseUtil.encode(R.failed(new ServiceException("注册用户'" + userDTO.getUserName() + "'失败，邮箱账号已存在！"))));
+            return result(R.failed(new ServiceException("注册用户'" + userDTO.getUserName() + "'失败，邮箱账号已存在！")));
         }
 
         String userId = "GSG" + PkGenerator.generate();
@@ -42,7 +42,7 @@ public class UserController {
                 // 对用户密码加密
                 .setPassword(PasswordUtils.encode(userDTO.getPassword()));
         userService.insertUser(userDTO);
-        return Result.ok(BaseUtil.encode(R.ok("注册成功")));
+        return result(R.ok("注册成功"));
     }
 
     /**
@@ -54,7 +54,7 @@ public class UserController {
     @PostMapping("/getUserDetails")
     public Result<?> getUserDetails(@RequestBody RequestDTO requestDTO) {
         UserDetailsVO userDetailsVO = userService.getUserDetails(requestDTO.getUserId());
-        return Result.ok(BaseUtil.encode(R.ok(userDetailsVO)));
+        return result(R.ok(userDetailsVO));
     }
 
 

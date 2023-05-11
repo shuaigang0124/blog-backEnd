@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gsg.blog.dto.CommonDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -15,47 +16,77 @@ import javax.validation.constraints.NotNull;
 
 /**
  * <p>
- * 留言弹幕表
+ * 博客-评论表
  * </p>
  *
  * @author shuaigang
- * @since 2023-04-27
+ * @since 2023-05-09
  */
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@TableName("message")
+@TableName("article_comment")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Message implements Serializable {
+public class ArticleComment extends CommonDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 留言表主键
+     * 自定义主键
      */
     @TableId("id")
     private String id;
 
     /**
-     * 发送者
+     * 日常分享表主键ID
+     */
+    @NotNull(message = "articleId is not null")
+    @TableField("article_id")
+    private String articleId;
+
+    /**
+     * 用户表主键
      */
     @NotNull(message = "userId is not null")
     @TableField("user_id")
     private String userId;
 
     /**
-     * 颜色
+     * 被评论人主键
      */
-    @NotNull(message = "userId is not null")
-    @TableField("color")
-    private String color;
+    @TableField("be_commented_user_id")
+    private String beCommentedUserId;
 
     /**
-     * 消息
+     * 评论父级id
      */
-    @NotNull(message = "userId is not null")
+    @TableField("parent_id")
+    private String parentId;
+
+    /**
+     * 评论等级
+     */
+    @TableField("level")
+    private Integer level;
+
+    /**
+     * 评论内容
+     */
+    @NotNull(message = "content is not null")
     @TableField("content")
     private String content;
+
+    /**
+     * 点赞数
+     */
+    @TableField("click_num")
+    private Integer clickNum;
+
+    /**
+     * 逻辑删除,0-未删除,1-已删除,默认值0
+     */
+    @TableField("deleted")
+    private Integer deleted;
 
     /**
      * 创建时间
@@ -68,12 +99,6 @@ public class Message implements Serializable {
      */
     @TableField("gmt_modified")
     private Date gmtModified;
-
-    /**
-     * 逻辑删除,0-未删除,1-已删除,默认值0
-     */
-    @TableField("deleted")
-    private Integer deleted;
 
 
 }
