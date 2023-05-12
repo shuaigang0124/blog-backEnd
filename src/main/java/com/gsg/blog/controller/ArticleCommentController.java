@@ -8,6 +8,7 @@ import com.gsg.blog.utils.PkGenerator;
 import com.gsg.blog.utils.R;
 import com.gsg.blog.utils.Result;
 import com.gsg.blog.vo.ArticleCommentVo;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,9 +67,22 @@ public class ArticleCommentController extends BaseController {
     }
 
     @PostMapping("/delete")
-    public Result<?> delete(@RequestBody CommonDto commonDto) {
-        articleCommentService.removeByIds(commonDto.getIds());
+    public Result<?> delete(@RequestBody ArticleComment articleComment) {
+        if (StringUtils.isEmpty(articleComment.getId())) {
+            throw ServiceException.errorParams();
+        }
+
+        articleComment.setDeleted(1);
+        boolean row = articleCommentService.updateById(articleComment);
+        if (!row) {
+            throw ServiceException.busy();
+        }
         return result(R.ok());
     }
 
+    @PostMapping("/kudos")
+    public Result<?> kudos(@RequestBody CommonDto commonDto) {
+        articleCommentService.kudos(commonDto);
+        return result(R.ok());
+    }
 }

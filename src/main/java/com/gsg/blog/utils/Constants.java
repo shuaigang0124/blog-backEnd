@@ -75,4 +75,8 @@ public interface Constants {
 
     String GSG = "GSG";
 
+    String SQL_ERROR = "com.mysql.jdbc";
+    String JAVA_SQL_ERROR = "java.sql";
+
+
 }

@@ -28,7 +28,7 @@ public class UserDetailsVO implements Serializable {
 
     private String userName;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private LocalDate birthday;
 
     private String email;

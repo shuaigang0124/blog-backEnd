@@ -37,9 +37,21 @@ public class CommonDto implements Serializable {
     private List<String> ids;
 
     /**
+     * id
+     */
+    @TableField(exist = false)
+    private String serviceId;
+
+    /**
      * 当前用户id
      */
     @TableField(exist = false)
     private String nowUserId;
+
+    /**
+     * 状态
+     */
+    @TableField(exist = false)
+    private Boolean status;
 
 }

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -19,6 +20,7 @@ import lombok.EqualsAndHashCode;
  * @since 2023-05-09
  */
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 @TableName("user_kudos")
 @JsonInclude(JsonInclude.Include.NON_NULL)

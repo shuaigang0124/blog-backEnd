@@ -73,6 +73,7 @@ public class WebSecurityConfig {
             "/gsg/articleComment/update",
             "/gsg/articleComment/getList",
             "/gsg/articleComment/delete",
+            "/gsg/articleComment/kudos",
 
             "/gsg/article/insert",
             "/gsg/article/update",

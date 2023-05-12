@@ -47,7 +47,7 @@ public class ArticleComment extends CommonDto implements Serializable {
     /**
      * 用户表主键
      */
-    @NotNull(message = "userId is not null")
+    @NotNull(message = "请登录")
     @TableField("user_id")
     private String userId;
 
@@ -72,7 +72,7 @@ public class ArticleComment extends CommonDto implements Serializable {
     /**
      * 评论内容
      */
-    @NotNull(message = "content is not null")
+    @NotNull(message = "内容不能为空")
     @TableField("content")
     private String content;
 

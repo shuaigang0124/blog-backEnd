@@ -1,5 +1,6 @@
 package com.gsg.blog.service;
 
+import com.gsg.blog.dto.CommonDto;
 import com.gsg.blog.model.ArticleComment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gsg.blog.vo.ArticleCommentVo;
@@ -20,4 +21,5 @@ public interface IArticleCommentService extends IService<ArticleComment> {
 
     Integer getListArticleCommentTotal(ArticleComment articleComment);
 
+    void kudos(CommonDto commonDto);
 }
