@@ -30,7 +30,7 @@
         <if test="articleId != null and articleId != ''">
             and ac.article_id = #{articleId}
         </if>
-        order by ac.gmt_create
+        order by ac.gmt_create desc
         <if test="pageNum != null and pageSize != null">
             <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
             limit #{key_offset}, #{pageSize}
