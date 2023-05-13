@@ -54,4 +54,16 @@ public class CommonDto implements Serializable {
     @TableField(exist = false)
     private Boolean status;
 
+    /**
+     * 开始时间
+     */
+    @TableField(exist = false)
+    private String startTime;
+
+    /**
+     * 结束时间
+     */
+    @TableField(exist = false)
+    private String endTime;
+
 }

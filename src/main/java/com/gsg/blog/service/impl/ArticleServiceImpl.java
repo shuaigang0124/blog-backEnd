@@ -6,6 +6,7 @@ import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.mapper.UserMapper;
 import com.gsg.blog.model.Article;
 import com.gsg.blog.mapper.ArticleMapper;
+import com.gsg.blog.model.Tag;
 import com.gsg.blog.model.User;
 import com.gsg.blog.service.IArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -55,7 +56,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArticleVo articleVo = new ArticleVo();
         BeanUtils.copyProperties(article1, articleVo);
         if (StringUtils.isEmpty(articleVo.getUserId())) {
-            throw ServiceException.error("作者信息获取异常");
+            throw ServiceException.error("作者信息获取异常!");
         }
         User user = userMapper.selectById(articleVo.getUserId());
         BeanUtils.copyProperties(user, articleVo);
@@ -64,6 +65,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         articleVo.setTags(tags);
 
         return articleVo;
+    }
+
+    @Override
+    public List<ArticleVo> getArticleByTagId(Tag tag) {
+        if (tag.getId() == null) {
+            throw ServiceException.errorParams();
+        }
+        List<ArticleVo> list = articleMapper.getArticleByTagId(tag);
+        for (ArticleVo articleVo : list) {
+            if (StringUtils.isEmpty(articleVo.getId())) {
+                throw ServiceException.error("博客信息获取异常!");
+            }
+            List<TagVo> tags = articleMapper.getTags(articleVo.getId());
+            articleVo.setTags(tags);
+        }
+        return list;
+    }
+
+    @Override
+    public Integer getArticleTotalByTagId(Tag tag) {
+        if (tag.getId() == null) {
+            throw ServiceException.errorParams();
+        }
+        return articleMapper.getArticleTotalByTagId(tag);
     }
 
 }

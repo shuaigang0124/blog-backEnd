@@ -2,6 +2,7 @@ package com.gsg.blog.mapper;
 
 import com.gsg.blog.model.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.gsg.blog.model.Tag;
 import com.gsg.blog.vo.ArticleVo;
 import com.gsg.blog.vo.TagVo;
 
@@ -21,5 +22,9 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     Integer getListArticleTotal(Article article);
 
-    List<TagVo> getTags(String articleId);
+    List<TagVo> getTags(String id);
+
+    List<ArticleVo> getArticleByTagId(Tag tag);
+
+    Integer getArticleTotalByTagId(Tag tag);
 }

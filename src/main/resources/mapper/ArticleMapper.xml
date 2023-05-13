@@ -22,11 +22,10 @@
         <result column="deleted" property="deleted" />
         <result column="gmt_create" property="gmtCreate" />
         <result column="gmt_modified" property="gmtModified" />
-        <collection property="id" column="id" javaType="java.util.List" select="getTags" />
+        <collection property="tags" column="id" javaType="java.util.List" select="getTags" />
     </resultMap>
 
-    <select id="getListArticle" resultType="com.gsg.blog.vo.ArticleVo"
-            parameterType="com.gsg.blog.model.Article">
+    <select id="getListArticle" parameterType="com.gsg.blog.model.Article" resultMap="BaseResultMap">
         select a.id,
                a.user_id,
                u.user_name,
@@ -48,7 +47,7 @@
                 and a.user_id = #{userId}
             </if>
         </where>
-        order by a.is_notice desc, a.gmt_create desc
+        order by a.is_notice desc,a.click_num desc, a.read_num desc, a.gmt_create desc
         <if test="pageNum != null and pageSize != null">
             <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
             limit #{key_offset}, #{pageSize}
@@ -72,7 +71,53 @@
         from article_tag at
         inner join article a on a.id = at.article_id
         inner join tag t on t.id = at.tag_id
-        where at.article_id = #{articleId}
+        where at.article_id = #{id}
+        and t.deleted = 0
+    </select>
+
+    <sql id="getArticleByTagIdWhere">
+        where
+        at.tag_id = #{id}
+        and t.deleted = 0
+        <if test="startTime != null and startTime != ''">
+            and a.gmt_create <![CDATA[ >= ]]> CAST(CONCAT(#{startTime},' 00:00:00') AS datetime)
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and a.gmt_create <![CDATA[ <= ]]> CAST(CONCAT(#{endTime},' 23:59:59') AS datetime)
+        </if>
+    </sql>
+
+    <select id="getArticleByTagId" resultType="com.gsg.blog.vo.ArticleVo">
+        select a.id,
+--                a.user_id,
+--                u.user_name,
+--                u.avatar,
+               a.title,
+               a.description,
+--                a.content,
+--                a.img,
+               a.click_num,
+               a.read_num,
+               a.is_originality,
+--                a.is_notice,
+               a.gmt_create
+        from article_tag at
+        inner join article a on a.id = at.article_id
+        inner join tag t on t.id = at.tag_id
+        <include refid="getArticleByTagIdWhere"/>
+        order by a.gmt_create desc
+        <if test="pageNum != null and pageSize != null">
+            <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
+            limit #{key_offset}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="getArticleTotalByTagId" resultType="java.lang.Integer">
+        select count(1)
+        from article_tag at
+        inner join article a on a.id = at.article_id
+        inner join tag t on t.id = at.tag_id
+        <include refid="getArticleByTagIdWhere"/>
     </select>
 
 </mapper>

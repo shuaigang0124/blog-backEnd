@@ -5,6 +5,7 @@ import com.gsg.blog.dto.ArticleDTO;
 import com.gsg.blog.dto.CommonDto;
 import com.gsg.blog.ex.ServiceException;
 import com.gsg.blog.model.Article;
+import com.gsg.blog.model.Tag;
 import com.gsg.blog.model.User;
 import com.gsg.blog.service.IArticleService;
 import com.gsg.blog.service.IUserService;
@@ -156,6 +157,19 @@ public class ArticleController extends BaseController {
         List<ArticleVo> list = articleService.getListArticle(article);
         return result(R.ok(pageVo(pageNum, pageSize, list.size(),
                 articleService.getListArticleTotal(article), list)));
+    }
+
+    @PostMapping("/getAtcByTagId")
+    public Result<?> getAtcByTagId(@RequestBody Tag tag) {
+        List<ArticleVo> list = articleService.getArticleByTagId(tag);
+        if (tag.getPageNum() == null || tag.getPageSize() == null) {
+            return result(R.ok(list));
+        }
+        return result(R.ok(pageVo(tag.getPageNum(),
+                tag.getPageSize(),
+                list.size(),
+                articleService.getArticleTotalByTagId(tag),
+                list)));
     }
 
     @PostMapping("/getById")

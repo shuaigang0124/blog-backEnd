@@ -80,6 +80,11 @@ public class WebSecurityConfig {
             "/gsg/article/getById",
             "/gsg/article/getList",
             "/gsg/article/delete",
+            "/gsg/article/getAtcByTagId",
+
+            "/gsg/tag/insert",
+            "/gsg/tag/update",
+            "/gsg/tag/getList",
 
             "/gsg/test"
     };
