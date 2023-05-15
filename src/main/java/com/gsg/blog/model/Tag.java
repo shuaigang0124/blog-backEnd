@@ -41,10 +41,10 @@ public class Tag extends CommonDto implements Serializable {
     private String name;
 
     /**
-     * 标签类型,0-info;1-success;2-warning;3-danger;4-无类型
+     * 标签颜色
      */
-    @TableField("type")
-    private Integer type;
+    @TableField("color")
+    private String color;
 
     /**
      * 逻辑删除,0-未删除,1-已删除,默认值0
