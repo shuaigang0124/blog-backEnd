@@ -25,6 +25,14 @@
         <collection property="tags" column="id" javaType="java.util.List" select="getTags" />
     </resultMap>
 
+    <sql id="getListArticle_where">
+        where
+            a.deleted = 0
+        <if test="userId != null and userId != ''">
+            and a.user_id = #{userId}
+        </if>
+    </sql>
+
     <select id="getListArticle" parameterType="com.gsg.blog.model.Article" resultMap="BaseResultMap">
         select a.id,
                a.user_id,
@@ -42,11 +50,7 @@
                a.gmt_modified
         from article a
         inner join user u on u.id = a.user_id
-        <where>
-            <if test="userId != null and userId != ''">
-                and a.user_id = #{userId}
-            </if>
-        </where>
+        <include refid="getListArticle_where"/>
         order by a.is_notice desc,a.click_num desc, a.read_num desc, a.gmt_create desc
         <if test="pageNum != null and pageSize != null">
             <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
@@ -58,11 +62,7 @@
         select count(1)
         from article a
         inner join user u on u.id = a.user_id
-        <where>
-            <if test="userId != null and userId != ''">
-                and a.user_id = #{userId}
-            </if>
-        </where>
+        <include refid="getListArticle_where"/>
     </select>
 
     <select id="getTags" resultType="com.gsg.blog.vo.TagVo">
