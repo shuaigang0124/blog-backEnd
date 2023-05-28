@@ -20,6 +20,11 @@ public class TagVo implements Serializable {
     private static final long serialVersionUID = 9194482394615548389L;
 
     /**
+     * 标签id
+     */
+    private Integer id;
+
+    /**
      * 标签颜色
      */
     private String color;

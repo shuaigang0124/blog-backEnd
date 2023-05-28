@@ -67,6 +67,7 @@
 
     <select id="getTags" resultType="com.gsg.blog.vo.TagVo">
         select t.color,
+               t.id,
                t.name
         from article_tag at
         inner join article a on a.id = at.article_id
