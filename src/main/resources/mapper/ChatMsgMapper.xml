@@ -7,6 +7,13 @@
         from chat_msg
         where
             is_latest = 1
+        <if test="roomId == 'chat-room'">
+            and room_id = #{roomId}
+        </if>
+        <if test="roomId != 'chat-room'">
+            and ((room_id = #{roomId} and user_id = #{userId})
+            or (room_id = #{userId} and user_id = #{roomId}))
+        </if>
         order by gmt_create desc limit 1,1
     </select>
 
@@ -23,13 +30,40 @@
                u.avatar as userAvatar
         from chat_msg cm
         inner join user u on u.id = cm.user_id
-        where
-            cm.room_id = #{roomId}
+        <where>
+            <if test="roomId == 'chat-room'">
+                and cm.room_id = #{roomId}
+            </if>
+            <if test="roomId != 'chat-room'">
+                and ((cm.room_id = #{roomId} and cm.user_id = #{userId})
+                or (cm.room_id = #{userId} and cm.user_id = #{roomId}))
+            </if>
+        </where>
         order by cm.send_time desc
         <if test="pageNum != null and pageSize != null">
             <bind name="key_offset" value="( pageNum - 1 ) * pageSize"></bind>
             limit #{key_offset},#{pageSize}
         </if>
+    </select>
+
+    <select id="getChatRoomList" resultType="com.gsg.blog.vo.ChatListVO"
+            parameterType="com.gsg.blog.dto.ChatMsgDTO">
+        select
+            cm.id,
+            cm.user_id,
+            cm.room_id,
+            cm.content,
+            cm.type,
+            cm.is_latest,
+            cm.send_time,
+            u.user_name as userName,
+            u.avatar as userAvatar
+        from chat_msg cm
+        inner join user u on u.id = cm.user_id
+        where
+            cm.is_latest = 1
+            and (cm.room_id = #{roomId} or cm.user_id = #{roomId})
+        order by cm.send_time
     </select>
 
 </mapper>

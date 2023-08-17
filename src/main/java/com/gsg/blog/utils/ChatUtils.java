@@ -28,7 +28,7 @@ public class ChatUtils {
      * @author shuaigang
      * @date  2022/8/31 13:C1
      */
-    public void publishMsg(ChatListVO chatListVO) {
+    public void publishMsg(ChatListVO chatListVO, Integer type) {
         // 向MQ中发送信息
         String msgContentEncode = BaseUtil.encode(chatListVO);
 
@@ -44,7 +44,11 @@ public class ChatUtils {
         }
 
         assert chatRequestJsonStr != null;
-        RabbitMqConfig.rabbitMqChatClient.publish(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
+        if (type == 1) {
+            RabbitMqConfig.rabbitMqChatClient.publishToUser(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
+            return;
+        }
+        RabbitMqConfig.rabbitMqChatClient.publishToGroup(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
     }
 
     /**

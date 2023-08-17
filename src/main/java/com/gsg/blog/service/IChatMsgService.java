@@ -43,4 +43,11 @@ public interface IChatMsgService extends IService<ChatMsg> {
      */
     List<ChatListVO> getChatList(ChatMsgDTO chatMsgDTO);
 
+    /**
+     * 获取用户聊天列表
+     * @param chatMsgDTO chatMsgDTO
+     * @return list
+     */
+    List<ChatListVO> getChatRoomList(ChatMsgDTO chatMsgDTO);
+
 }

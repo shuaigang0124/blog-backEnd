@@ -52,6 +52,11 @@ public class ChatMsgDTO extends CommonDto implements Serializable {
     private Integer type;
 
     /**
+     * 聊天类型，1-用户间点对点，2-群聊
+     */
+    private Integer chatType;
+
+    /**
      * 是否为最后一条信息: 0-不是, 1-是
      */
     private Integer isLatest;

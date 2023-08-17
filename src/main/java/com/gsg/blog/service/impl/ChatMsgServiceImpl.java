@@ -57,7 +57,7 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
         chatListVO.setUserName(userById.getUserName())
                 .setUserAvatar(userById.getAvatar());
         // mq发送消息
-        chatUtils.publishMsg(chatListVO);
+        chatUtils.publishMsg(chatListVO, chatMsgDTO.getChatType() == null ? 2 : chatMsgDTO.getChatType());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
         }
         log.info("存入的消息【{}】", chatMsg);
         /* 更新上一条聊天记录isLatest为0*/
-        ChatMsg lastChatMsg = chatMsgMapper.selectLastMsg();
+        ChatMsg lastChatMsg = chatMsgMapper.selectLastMsg(chatMsg.getUserId(), chatMsg.getRoomId());
         if (!ObjectUtils.isEmpty(lastChatMsg)) {
             lastChatMsg.setIsLatest(0);
             chatMsgMapper.updateById(lastChatMsg);
@@ -94,6 +94,17 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
             throw ServiceException.errorParams();
         }
         return chatMsgMapper.getChatList(chatMsgDTO);
+    }
+
+    @Override
+    public List<ChatListVO> getChatRoomList(ChatMsgDTO chatMsgDTO) {
+        String roomId = chatMsgDTO.getRoomId();
+        Integer pageNum = chatMsgDTO.getPageNum();
+        Integer pageSize = chatMsgDTO.getPageSize();
+        if (StringUtils.isEmpty(roomId) || pageNum == null || pageSize == null) {
+            throw ServiceException.errorParams();
+        }
+        return chatMsgMapper.getChatRoomList(chatMsgDTO);
     }
 
 }

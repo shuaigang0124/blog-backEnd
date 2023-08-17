@@ -51,11 +51,20 @@ public class ChatMsgController {
     }
 
     /**
-     * 查询用户聊天列表
+     * 查询用户聊天历史数据
      */
     @PostMapping("/getChatList")
     public Result<?> getChatList(@RequestBody ChatMsgDTO chatMsgDTO) {
         List<ChatListVO> chatList = chatMsgService.getChatList(chatMsgDTO);
+        return Result.ok(BaseUtil.encode(R.ok(chatList)));
+    }
+
+    /**
+     * 查询用户聊天列表
+     */
+    @PostMapping("/getChatRoomList")
+    public Result<?> getChatRoomList(@RequestBody ChatMsgDTO chatMsgDTO) {
+        List<ChatListVO> chatList = chatMsgService.getChatRoomList(chatMsgDTO);
         return Result.ok(BaseUtil.encode(R.ok(chatList)));
     }
 

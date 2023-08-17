@@ -52,11 +52,18 @@ public class RabbitMqConfig {
         RabbitMqConfig.rabbitMqChatClient = rabbitMqChatClient;
     }
 
-    /** 自定义exchange */
+    /** 自定义群聊exchange */
     public static String chatExchangeName;
     @Value("${rabbitmq.chatExchangeName}")
     public void setChatExchangeName(String chatExchangeName) {
         RabbitMqConfig.chatExchangeName = chatExchangeName;
+    }
+
+    /** 自定义用户间exchange2 */
+    public static String chatExchangeName2;
+    @Value("${rabbitmq.chatExchangeName2}")
+    public void setChatExchangeName2(String chatExchangeName2) {
+        RabbitMqConfig.chatExchangeName2 = chatExchangeName2;
     }
 
     /** 超时时间 ttl 毫秒 */
