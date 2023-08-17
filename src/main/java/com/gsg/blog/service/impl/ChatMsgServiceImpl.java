@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -99,12 +100,26 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
     @Override
     public List<ChatListVO> getChatRoomList(ChatMsgDTO chatMsgDTO) {
         String roomId = chatMsgDTO.getRoomId();
-        Integer pageNum = chatMsgDTO.getPageNum();
-        Integer pageSize = chatMsgDTO.getPageSize();
-        if (StringUtils.isEmpty(roomId) || pageNum == null || pageSize == null) {
+        if (StringUtils.isEmpty(roomId)) {
             throw ServiceException.errorParams();
         }
-        return chatMsgMapper.getChatRoomList(chatMsgDTO);
+        List<ChatListVO> list = chatMsgMapper.getChatRoomList(chatMsgDTO);
+        List<String> userList = new ArrayList<>();
+        List<ChatListVO> resultList = new ArrayList<>();
+        for (ChatListVO vo : list) {
+            if (vo.getRoomId().equals(roomId)) {
+                if (!userList.contains(vo.getUserId())) {
+                    userList.add(vo.getUserId());
+                    resultList.add(vo);
+                }
+                continue;
+            }
+            if (!userList.contains(vo.getRoomId())) {
+                userList.add(vo.getRoomId());
+                resultList.add(vo);
+            }
+        }
+        return resultList;
     }
 
 }
