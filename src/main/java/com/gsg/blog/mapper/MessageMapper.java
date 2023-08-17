@@ -3,6 +3,7 @@ package com.gsg.blog.mapper;
 import com.gsg.blog.model.Message;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gsg.blog.vo.MessageVO;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @author shuaigang
  * @since 2023-04-27
  */
+@Mapper
 public interface MessageMapper extends BaseMapper<Message> {
 
     /**

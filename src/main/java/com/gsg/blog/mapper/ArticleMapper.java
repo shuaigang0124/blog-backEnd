@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gsg.blog.model.Tag;
 import com.gsg.blog.vo.ArticleVo;
 import com.gsg.blog.vo.TagVo;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @author shuaigang
  * @since 2023-05-09
  */
+@Mapper
 public interface ArticleMapper extends BaseMapper<Article> {
 
     List<ArticleVo> getListArticle(Article article);

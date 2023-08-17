@@ -2,6 +2,7 @@ package com.gsg.blog.mapper;
 
 import com.gsg.blog.model.Tag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author shuaigang
  * @since 2023-05-13
  */
+@Mapper
 public interface TagMapper extends BaseMapper<Tag> {
 
 }

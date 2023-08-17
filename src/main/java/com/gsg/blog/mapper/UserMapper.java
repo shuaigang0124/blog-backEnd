@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gsg.blog.dto.UserDTO;
 import com.gsg.blog.model.User;
 import com.gsg.blog.vo.UserVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * @author shuaigang
  */
+@Mapper
 @Repository
 public interface UserMapper extends BaseMapper<User> {
 

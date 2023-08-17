@@ -4,6 +4,7 @@ import com.gsg.blog.dto.ChatMsgDTO;
 import com.gsg.blog.model.ChatMsg;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gsg.blog.vo.ChatListVO;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @author shuaigang
  * @since 2023-04-24
  */
+@Mapper
 public interface ChatMsgMapper extends BaseMapper<ChatMsg> {
 
     /**

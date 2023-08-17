@@ -45,7 +45,7 @@ public class ChatUtils {
 
         assert chatRequestJsonStr != null;
         if (type == 1) {
-            RabbitMqConfig.rabbitMqChatClient.publishToUser(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
+            RabbitMqConfig.rabbitMqChatClient.publishToUser(queuePrefix + chatListVO.getRoomId() + queueSuffix, chatRequestJsonStr);
             return;
         }
         RabbitMqConfig.rabbitMqChatClient.publishToGroup(queuePrefix + chatListVO.getUserId() + queueSuffix, chatRequestJsonStr);
