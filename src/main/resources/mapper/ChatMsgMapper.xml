@@ -62,7 +62,7 @@
         inner join user u on u.id = cm.user_id
         where
             cm.is_latest = 1
-            and (cm.room_id = #{roomId} or cm.user_id = #{roomId})
+            and (cm.room_id = 'chat-room' or cm.room_id = #{roomId} or cm.user_id = #{roomId})
         order by cm.send_time
     </select>
 

@@ -11,6 +11,7 @@ import com.gsg.blog.service.IUserService;
 import com.gsg.blog.utils.ChatUtils;
 import com.gsg.blog.utils.PkGenerator;
 import com.gsg.blog.vo.ChatListVO;
+import com.gsg.blog.vo.UserDetailsVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -110,12 +111,18 @@ public class ChatMsgServiceImpl extends ServiceImpl<ChatMsgMapper, ChatMsg> impl
             if (vo.getRoomId().equals(roomId)) {
                 if (!userList.contains(vo.getUserId())) {
                     userList.add(vo.getUserId());
+                    UserDetailsVO userDetails = userService.getUserDetails(vo.getUserId());
+                    vo.setUserName(userDetails.getUserName())
+                            .setUserAvatar(userDetails.getAvatar());
                     resultList.add(vo);
                 }
                 continue;
             }
             if (!userList.contains(vo.getRoomId())) {
                 userList.add(vo.getRoomId());
+                UserDetailsVO userDetails = userService.getUserDetails(vo.getRoomId());
+                vo.setUserName(userDetails.getUserName())
+                        .setUserAvatar(userDetails.getAvatar());
                 resultList.add(vo);
             }
         }
