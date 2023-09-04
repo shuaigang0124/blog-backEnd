@@ -86,6 +86,10 @@ public class WebSecurityConfig {
             "/gsg/tag/update",
             "/gsg/tag/getList",
 
+            "/gsg/appVersion/insert",
+            "/gsg/appVersion/getLatest",
+            "/gsg/appVersion/getList",
+
             "/gsg/test"
     };
 

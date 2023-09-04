@@ -6,7 +6,7 @@
     <resultMap id="BaseResultMap" type="com.gsg.blog.model.Tag">
         <id column="id" property="id" />
         <result column="name" property="name" />
-        <result column="type" property="type" />
+        <result column="color" property="color" />
         <result column="deleted" property="deleted" />
         <result column="gmt_create" property="gmtCreate" />
         <result column="gmt_modified" property="gmtModified" />
